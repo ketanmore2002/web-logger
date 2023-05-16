@@ -1,0 +1,1255 @@
+<script>
+  $(document).ready(function () {
+    jQuery.noConflict(); 
+    $('#password_modal').modal('show');       
+      var y;
+  
+      function create_token(){     
+        
+        var payload = {
+          "username":"{{request.user.username}}",
+          "password": $("#password").val()
+                };
+  
+        $.ajax({
+          url: "/api/token/",
+          async: false,
+          type: "POST",
+          data: JSON.stringify(payload),
+          cache: false,
+          processData: false,
+          contentType: "application/json",
+          success: function (data) {
+              // store tokens in localStorage
+              //x=window.localStorage.setItem('refreshToken', data['refresh']);
+              window.localStorage.setItem('accessToken', data['access']);
+              y = data['access']
+              //console.log(y);
+          },
+          error: function (rs, e) {
+              console.error(rs.status);
+              console.error(rs.responseText);
+          }
+      });
+    };
+      
+    //create_token();
+    //console.log("out",y);
+          
+      
+      Date.prototype.today = function () { 
+        return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear();
+    };
+    
+    // For the time now
+    Date.prototype.timeNow = function () {
+         return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+    };
+  
+    //var datetime = new Date().today() + " @ " + new Date().timeNow();
+  
+    //$('.time').text(datetime);
+  
+  
+      $("body").on("click", ".lala", function (e) {
+        e.preventDefault();
+        create_token();
+        var pk = this.id;
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+        $.ajax({
+          url: "delete_data_nodes/" + pk + "/",
+          data: {},
+          headers: headers_payload,
+          type: "POST",
+          contentType: "application/json",
+          success: function (result) {
+          document.getElementById("delete_node"+String(pk)).remove();
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        });
+      });
+  
+      $("#node2").hide();
+      $("#node1").click(function () {
+        jQuery.noConflict(); 
+        $('#exampleModal').modal('show');
+  
+      });
+  
+      $("#add_user").click(function () {
+        jQuery.noConflict(); 
+        $('#user_modal').modal('show');
+      });
+  
+      
+  
+      $("#add_node").click(function () {
+        create_token();
+        var payload_add = {
+          machine: $("#machine").val(),
+          location: $("#location").val(),
+          sub_location: $("#sub_location").val(),
+          _uuid: $("#UID").val(),
+          _user_name: "{{ user.username }}",
+          user_id: "{{ user.id }}",
+          csrfmiddlewaretoken: "{{ csrf_token }}",
+          current_low: $("#current_low").val(),
+          current_high: $("#current_high").val(),
+  
+          power_low: $("#power_low").val(),
+          power_high: $("#power_high").val(),
+          voltage_high: $("#voltage_high").val(),
+          voltage_low: $("#voltage_low").val(),
+          lpm_high: $("#lpm_high").val(),
+          lpm_low: $("#lpm_low").val(),
+          email: $("#email").val(),
+          longitude: $("#longitude").val(),
+          latitude: $("#latitude").val(),
+        };
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+        $.ajax({
+          url: "/post_data_nodes",
+          headers: headers_payload,
+          type: "POST",
+          data: JSON.stringify(payload_add),
+          success: function (data, textStatus, jqXHR) {
+            jQuery.noConflict(); 
+            $('#add_node_model').modal('show');
+            var x = `<div class="card border-0 backgroundColor m-2" id="delete_node${data.id}" style="width: 380px; border-radius: 20px 20px 20px 20px;">
+              <div class="d-flex flex-column p-4 blueGradient text-white borderRadiusTop border-0">
+                  <div>
+                      <span class="  mb-1" style="letter-spacing: 3px;">UID:</span>
+                      <h4 class="font-weight-bold"><p class="UID${data.id}"> ${data.uuid} </p></h4>
+                  </div>
+                  <div class="my-3">
+                      <span class=" mb-1" style="letter-spacing: 3px;">Last Updated:</span>
+                      <h4 class="font-weight-bold" id="time${data.uuid}"></h4>
+                  </div>
+                  <div>
+                      <span class=" mb-1" style="letter-spacing: 3px;">Location:</span>
+                      <h4 class="font-weight-bold"><p class="location${data.id}"> ${data.location}</p></h4>
+                  </div>
+              </div>
+              <div class="edit-class${data.id}">
+              <div class="d-flex flex-column p-4 blackGradient text-white borderRadiusBottom border-0">
+                  <h4 class="font-weight-bold mb-1">Machine: <p class="machine${data.id}"> ${data.machine} </p></h4>
+                  <h6 class="textColor border-bottom border-secondary pb-3" style="font-weight: 600;">Sub Location: ${data.sub_location} </h6>
+                  <h6 class="textColor border-bottom border-secondary pb-3" style="font-weight: 600;">longitude: ${data.longitude} </h6>
+                  <h6 class="textColor border-bottom border-secondary pb-3" style="font-weight: 600;">latitude: ${data.latitude} </h6>
+                  <h6 class="textColor border-secondary pb-3" style="font-weight: 600;">Node Health : <a id="faulty${data.uuid}"></a></h6>
+                  <div class="d-flex align-items-center justify-content-between mt-3 mb-4">
+                      <div class="w-100">
+                          <h6 class="font-weight-bold textColor d-flex align-items-center">
+                              power
+                          </h6>
+                          <span class="textColor" id="power-${data.uuid}" >${data.power}</span>
+                      </div>
+                      <div class="w-100">
+                          <h6 class="font-weight-bold textColor">current</h6>
+                          <span class="textColor" id="current-${data.uuid}">${data.current}<sup>o</sup>C</span>
+                      </div>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between mb-4">
+                      <div class="w-100">
+                          <h6 class="font-weight-bold textColor">voltage</h6>
+                          <span class="textColor" id="voltage-${data.uuid}" >${data.voltage}</span>
+                      </div>
+                      <div class="w-100">
+                          <h6 class="font-weight-bold textColor">Battery</h6>
+                          <span class="textColor" id="battery-${data.uuid}" >${data.battery}%</span>
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                      <div class="w-100">
+                        <h6 class="font-weight-bold textColor">lpm</h6>
+                        <span class="textColor" id="lpm-${data.uuid}">${data.lpm}</span>
+                      </div>
+                    </div>
+                    {% for group in user.groups.all %}
+                  {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+                  <div class="d-flex align-items-center justify-content-between blackGradient px-3 py-2 border-0" style="border-radius: 8px; box-shadow: 0 0 3px 1px rgb(85, 85, 85);">
+                      <h3>${data.user_name}</h3>
+                      <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary edit" id="${data.id}" style="border-radius: 10px;">
+                          Edit
+                      </button>
+                      <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary lala" id="${data.id}" style="border-radius: 10px;">
+                        Delete
+                    </button>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+              </div>
+          </div>
+        </div>
+          <input type="hidden" id="current_low${data.id}" value="${data.current_low}" />
+          <input type="hidden" id="current_high${data.id}" value="${data.current_high}" />
+          <input type="hidden" id="power_low${data.id}" value="${data.power_low}" />
+          <input type="hidden" id="power_high${data.id}" value="${data.power_high}" />
+          <input type="hidden" id="voltage_low${data.id}" value="${data.voltage_low}" />
+          <input type="hidden" id="voltage_high${data.id}" value="${data.voltage_high}" />
+          <input type="hidden" id="lpm_low${data.id}" value="${data.lpm_low}" />
+          <input type="hidden" id="lpm_high${data.id}" value="${data.lpm_high}" />`;
+  
+            $("#appender").append(x);
+            $("#close_node").click();
+            clear_form_elements("modal-body");
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        });
+      });
+  
+      $("body").on("click", ".edit", function () {
+        pk = (this.id);
+        var payload = {
+          machine: $.trim($(".machine" + pk).text()),
+          location: $.trim($(".location" + pk).text()),
+          sub_location: $.trim($(".sub_location" + pk).text()),
+          uid: $.trim($(".UID" + pk).text()),
+          current_low: $("#current_low"+pk).val(),
+          current_high: $("#current_high"+pk).val(),
+          power_low: $("#power_low"+pk).val(),
+          power_high: $("#power_high"+pk).val(),
+          voltage_high: $("#voltage_high"+pk).val(),
+          voltage_low: $("#voltage_low"+pk).val(),
+          lpm_high: $("#lpm_high"+pk).val(),
+          lpm_low: $("#lpm_low"+pk).val(),
+          csrfmiddlewaretoken: "{{ csrf_token }}",
+        };
+       console.log(payload)
+        var y1 = `<div class="edit-class${pk} m-4">
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">power Low</span>
+            </div>
+            <input type="text" class="form-control power_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div><div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">power High</span>
+            </div>
+            <input type="text" class="form-control power_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div><div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">current. Low</span>
+            </div>
+            <input type="text" class="form-control current_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div><div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">current. High</span>
+            </div>
+            <input type="text" class="form-control current_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div><div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">voltage  Low</span>
+            </div>
+            <input type="text" class="form-control voltage_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div><div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">voltage  High</span>
+            </div>
+            <input type="text" class="form-control voltage_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">lpm  Low</span>
+            </div>
+            <input type="text" class="form-control lpm_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+    
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">lpm  High</span>
+            </div>
+            <input type="text" class="form-control lpm_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+            </div>
+            <input type="text" class="form-control email${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+          </div>
+          <button type="button" class="btn btn-primary save-btn" id="${pk}">Submit</button>
+          <button type="button" class="btn btn-danger close-btn" id="${pk}">Close</button>
+        </div>`;
+  
+        $(".edit-class" + pk).replaceWith(y1);
+      });
+  
+      $("body").on("click", ".close-btn", function (e) {
+        e.preventDefault();
+        //create_token();
+        pk = this.id;
+        var payload = {
+          machine: $(".machine" + pk).text(),
+          location: $(".location" + pk).text(),
+          sub_location: $(".sub_location" + pk).text(),
+          uid: $(".UID" + pk).text(),
+          current_low: $("#current_low"+pk).val(),
+          current_high: $("#current_high"+pk).val(),
+          power_low: $("#power_low"+pk).val(),
+          power_high: $("#power_high"+pk).val(),
+          voltage_high: $("#voltage_high"+pk).val(),
+          voltage_low: $("#voltage_low"+pk).val(),
+          lpm_high: $("#lpm_high"+pk).val(),
+          lpm_low: $("#lpm_low"+pk).val(),
+          email: $("#email"+pk).val(),
+          csrfmiddlewaretoken: "{{ csrf_token }}",
+        };
+        //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+        $.ajax({
+          url: "/get_single_node/" + pk,
+          data: {},
+          //headers: headers_payload,
+          type: "GET",
+          contentType: "application/json",
+          success: function (result) {
+            //console.log(result[0].id)
+            //alert("Data: " + data + "\nStatus: " + status);
+            var data = result[0];
+            var z = `<div class="edit-class${data.id}">
+              <div class="d-flex flex-column p-4 blackGradient text-white borderRadiusBottom border-0">
+                <h4 class="font-weight-bold mb-1">Machine: <p class="machine${data.id}"> ${data.machine} </p>
+                </h4>
+                <h6 class="textColor border-bottom border-secondary pb-3 sub_location${data.id}" style="font-weight: 600;">Sub Location:${data.sub_location}</h6>
+                <h6 class="textColor  border-secondary pb-3 longitude${data.id}" style="font-weight: 600;">longitude : ${data.longitude}</h6>
+                <h6 class="textColor  border-bottom border-secondary pb-3 latitude${data.id}" style="font-weight: 600;">latitude : ${data.latitude}</h6>
+                <h6 class="textColor border-secondary pb-3" style="font-weight: 600;">Node Health : <a id="faulty${data.uuid}"></a></h6>
+                <div class="d-flex align-items-center justify-content-between mt-3 mb-4">
+                  <div class="w-100">
+                    <h6 class="font-weight-bold textColor d-flex align-items-center">
+                      power
+                    </h6>
+                    <span class="textColor" id="power-${data.uuid}">${data.power}</span>
+                  </div>
+                  <div class="w-100">
+                    <h6 class="font-weight-bold textColor">current</h6>
+                    <span class="textColor" id="current-${data.uuid}">${data.current}<sup>o</sup>C</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <div class="w-100">
+                    <h6 class="font-weight-bold textColor">voltage</h6>
+                    <span class="textColor" id="voltage-${data.uuid}">${data.voltage}</span>
+                  </div>
+                  <div class="w-100">
+                    <h6 class="font-weight-bold textColor">Battery</h6>
+                    <span class="textColor" id="battery-${data.uuid}">${data.battery}%</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <div class="w-100">
+                    <h6 class="font-weight-bold textColor">lpm</h6>
+                    <span class="textColor" id="lpm-${data.uuid}">${data.lpm}</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between blackGradient px-3 py-2 border-0"
+                  style="border-radius: 8px; box-shadow: 0 0 3px 1px rgb(85, 85, 85);">
+                  <h3>${data.user_name}</h3>
+                  <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary edit"
+                    id="${pk}" style="border-radius: 10px;">
+                    Edit
+                  </button>
+                  <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary lala" id="${pk}"
+                    style="border-radius: 10px;">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>`;
+  
+            $(".edit-class" + pk).replaceWith(z);
+          },
+        });
+      });
+  
+  
+       $("body").on("click", ".save-btn", function () {
+          create_token();
+          pk=this.id
+          var payload = {
+            //machine: $(".machine" + pk).val(),
+            //location: $(".location" + pk).val(),
+            //sub_location: $(".sub_location" + pk).val(),
+            //uuid: $(".UID" + pk).val(),
+            current_low: $(".current_low"+pk).val(),
+            current_high: $(".current_high"+pk).val(),
+            power_low: $(".power_low"+pk).val(),
+            power_high: $(".power_high"+pk).val(),
+            voltage_high: $(".voltage_high"+pk).val(),
+            voltage_low: $(".voltage_low"+pk).val(),
+            lpm_high: $(".lpm_high"+pk).val(),
+            lpm_low: $(".lpm_low"+pk).val(),
+            email: $(".email"+pk).val(),
+            };
+            headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+            console.log(payload);
+          $.ajax({
+            url: "/update_single_node/"+pk+"/",
+            type: "POST",
+            headers: headers_payload,
+            data : JSON.stringify(payload),
+            success: function (data, textStatus, jqXHR) {
+             jQuery.noConflict(); 
+             $('#changes').modal('show');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              alert(errorThrown);
+            },
+          });
+  
+      }); 
+  
+  
+      function get_data(uid,user_name,date,time){
+        //console.log("1"),
+        //create_token();
+        //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+        $.ajax({
+          url: "/send_node_data/"+uid+'/'+user_name+'/',
+          data: {},
+          //headers: headers_payload,
+          type: "GET",
+          contentType: "application/json",
+          success: function (result){
+            //console.log(result[0])
+            var u = result[0]['fields']['uuid'];
+            var b = result[0]['fields']['battery'];
+            var t = result[0]['fields']['current'];
+            var h = result[0]['fields']['power'];
+            var c = result[0]['fields']['voltage'];
+            var l = result[0]['fields']['lpm'];
+  
+            var th = result[0]['fields']['current_high'];
+            var hh = result[0]['fields']['power_high'];
+            var ch = result[0]['fields']['voltage_high'];
+            var lh = result[0]['fields']['lpm_high'];
+  
+            var tl = result[0]['fields']['current_low'];
+            var hl = result[0]['fields']['power_low'];
+            var cl = result[0]['fields']['voltage_low'];
+            var ll = result[0]['fields']['lpm_low'];
+  
+            //var time = result[0]['fields']['updated_at'];
+  
+            $('#current-'+u).text(t);
+            $('#power-'+u).text(h);
+            $('#battery-'+u).text(b);
+            $('#voltage-'+u).text(c);
+            $('#lpm-'+u).text(l);
+  
+            if (Number(t) > Number(th) || Number(t) < Number(tl) || Number(h) > Number(hh) || Number(h) < Number(hl) || Number(c) > Number(ch) || Number(c) < Number(cl) || Number(l) > Number(lh) || Number(l) < Number(ll)) {
+              $('#faulty'+u).text('Not Healthy')
+            }
+            else{
+              $('#faulty'+u).text('Healthy')          
+            };
+            //time = time.slice(0, -10); 
+            //time = time.substring(0, time.length - 10);
+            //console.log(time)
+            $('#time'+u).text(date +" @ "+time.slice(0, -10));
+                          
+          }
+        });};
+  
+  
+        function run_data(){
+          //create_token();
+          //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+          $.ajax({
+            url: "/all_data/",
+            data: {},
+            //headers: headers_payload,
+            type: "GET",
+            contentType: "application/json",
+            success: function (result){
+              //console.log(result)  
+              
+              for (let i = 0; i < result.length; i++) {
+  
+                //console.log(result[i]['fields']['uuid']);
+  
+                var uid = result[i]['fields']['uuid'];
+                var user_name = result[i]['fields']['user_name'];
+                var date = result[i]['fields']['date'];
+                var time = result[i]['fields']['time'];
+  
+                get_data(uid,user_name,date,time);
+              }
+              
+            }
+          });};
+  
+  
+  
+        setInterval( run_data, 5000);
+  
+        //---------------------------------------------------------------------------------------------------------------------
+  
+  
+  
+  
+  
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+  Chart.defaults.global.defaultFontColor = '#858796';
+  
+  function number_format(number, decimals, dec_point, thousands_sep) {
+  // *     example: number_format(1234.56, 2, ',', ' ');
+  // *     return: '1 234,56'
+  number = (number + '').replace(',', '').replace(' ', '');
+  var n = !isFinite(+number) ? 0 : +number,
+  prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+  sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+  dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+  s = '',
+  toFixedFix = function(n, prec) {
+    var k = Math.pow(10, prec);
+    return '' + Math.round(n * k) / k;
+  };
+  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+  if (s[0].length > 3) {
+  s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+  }
+  if ((s[1] || '').length < prec) {
+  s[1] = s[1] || '';
+  s[1] += new Array(prec - s[1].length + 1).join('0');
+  }
+  return s.join(dec);
+  }
+  
+  // Area Chart Example
+  function graph (label,data1,data2,data3,data4){
+  var ctx = document.getElementById("myAreaChart");
+  var myLineChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+  labels: label,
+  datasets: [{
+    label: "current",
+    lineTension: 0.3,
+    backgroundColor: "#FFFFFF",
+    borderColor: "#d45087",
+    pointRadius: 3,
+    pointBackgroundColor: "#d45087",
+    pointBorderColor: "#d45087",
+    pointHoverRadius: 3,
+    pointHoverBackgroundColor: "#d45087",
+    pointHoverBorderColor: "#d45087",
+    pointHitRadius: 10,
+    pointBorderWidth: 2,
+    data: data1,
+  },
+  {
+    label: "power",
+    lineTension: 0.3,
+    backgroundColor: "#FFFFFF",
+    borderColor: "rgba(78, 115, 223, 1)",
+    pointRadius: 3,
+    pointBackgroundColor: "blue",
+    pointBorderColor: "rgba(78, 115, 223, 1)",
+    pointHoverRadius: 3,
+    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+    pointHitRadius: 10,
+    pointBorderWidth: 2,
+    data: data2,
+  },
+  {
+    label: "voltage",
+    lineTension: 0.3,
+    backgroundColor: "#FFFFFF",
+    borderColor: "yellow",
+    pointRadius: 3,
+    pointBackgroundColor: "yellow",
+    pointBorderColor: "yellow",
+    pointHoverRadius: 3,
+    pointHoverBackgroundColor: "yellow",
+    pointHoverBorderColor: "yellow",
+    pointHitRadius: 10,
+    pointBorderWidth: 2,
+    data: data3,
+  },
+  {
+    label: "lpm",
+    lineTension: 0.3,
+    backgroundColor: "#FFFFFF",
+    borderColor: "purple",
+    pointRadius: 3,
+    pointBackgroundColor: "purple",
+    pointBorderColor: "purple",
+    pointHoverRadius: 3,
+    pointHoverBackgroundColor: "purple",
+    pointHoverBorderColor: "purple",
+    pointHitRadius: 10,
+    pointBorderWidth: 2,
+    data: data4,
+  }],
+  },
+  options: {
+  maintainAspectRatio: false,
+  layout: {
+    padding: {
+      left: 10,
+      right: 25,
+      top: 25,
+      bottom: 0
+    }
+  },
+  scales: {
+    xAxes: [{
+      time: {
+        unit: 'date'
+      },
+      gridLines: {
+        display: false,
+        drawBorder: false
+      },
+      ticks: {
+        maxTicksLimit: 7
+      }
+    }],
+    yAxes: [{
+      ticks: {
+        maxTicksLimit: 5,
+        padding: 10,
+        // Include a dollar sign in the ticks
+        callback: function(value, index, values) {
+          return number_format(value);
+        }
+      },
+      gridLines: {
+        color: "rgb(234, 236, 244)",
+        zeroLineColor: "rgb(234, 236, 244)",
+        drawBorder: false,
+        borderDash: [2],
+        zeroLineBorderDash: [2]
+      }
+    }],
+  },
+  legend: {
+    display: false
+  },
+  tooltips: {
+    backgroundColor: "rgb(255,255,255)",
+    bodyFontColor: "#858796",
+    titleMarginBottom: 10,
+    titleFontColor: '#6e707e',
+    titleFontSize: 14,
+    borderColor: '#dddfeb',
+    borderWidth: 1,
+    xPadding: 15,
+    yPadding: 15,
+    displayColors: false,
+    intersect: false,
+    mode: 'index',
+    caretPadding: 10,
+    callbacks: {
+      label: function(tooltipItem, chart) {
+        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+        return datasetLabel + ':' +  number_format(tooltipItem.yLabel);
+      }
+    }
+  }
+  }
+  });};
+  
+  $("#senddata").click(function (e) {
+  e.preventDefault();
+  create_token();
+  var payload_add = {
+  uuid: $("#uuid_graph").val(),
+  field: $("#field").val(),
+  start_date: $("#start_date").val(),
+  end_date: $("#end_date").val(),   
+  start_time: $("#start_time").val(),
+  end_time: $("#end_time").val(),    
+  };
+  if(Math.floor((Date.parse($("#end_date").val()) - Date.parse($("#start_date").val())) / 86400000) < 90){
+  headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+  $.ajax({
+  url: "/graph"+"/",
+  headers: headers_payload,
+  type: "POST",
+  data: JSON.stringify(payload_add),
+  success: function (data, textStatus, jqXHR) {
+    
+    var label = [];
+    var data1 = [];
+    var data2 = [];
+    var data3 = [];
+    var data4 = [];
+  
+  
+    $('#table-report').empty();
+  
+    for (let i = 0; i < data.length; i++) {
+      label.push(data[i]["fields"]["date"]);
+      data1.push(data[i]["fields"]["current"]);
+      data2.push(data[i]["fields"]["power"]);
+      data3.push(data[i]["fields"]["voltage"]);
+      data4.push(data[i]["fields"]["lpm"]);
+  
+  
+      var uuid = data[i]['fields']['uuid'];
+      var battery = data[i]['fields']['battery'];
+      var current = data[i]['fields']['current'];
+      var power = data[i]['fields']['power'];
+      var voltage = data[i]['fields']['voltage'];
+      var lpm = data[i]['fields']['lpm'];
+      var date = data[i]['fields']['date'];
+      var time = data[i]['fields']['time'];
+      var power = data[i]['fields']['power'];
+      var battery = data[i]['fields']['battery'];
+  
+      $("#table-report").append(`<tr>
+        <th scope="row">${i}</th>
+        <td>${date}</td>
+        <td>${time}</td>
+        <td>${uuid}</td>
+        <td>${current}</td>
+        <td>${voltage}</td>
+        <td>${lpm}</td>
+        <td>${power}</td>
+        <td>${battery}</td>
+      </tr>`);
+  
+    };
+    $("#myAreaChart").remove()
+    $("#graph_div").append(`<canvas id="myAreaChart"></canvas>`)
+    graph (label,data1,data2,data3,data4);
+  
+    uuid= $("#uuid_graph").val(),
+    start_time= $("#start_time").val(),
+    end_time= $("#end_time").val(),   
+    start_date= $("#start_date").val(),
+    end_date= $("#end_date").val(),   
+    $("#node_name").text(uuid)
+    $("#node_date").text(start_date+"-"+end_date) 
+    $("#node_time").text(start_time+"-"+end_time)
+    $("#print_table").attr("href", "/generateinvoice/"+uuid+"/"+start_time+"/"+end_time+"/"+start_date+"/"+end_date+"/")
+  
+    // data1.push(data[i]["fields"]["current"]);
+    // data2.push(data[i]["fields"]["power"]);
+    // data3.push(data[i]["fields"]["voltage"]);
+  
+    function getStandardDeviation (array) {
+    const n = array.length
+    const mean = array.reduce((a, b) => a + b) / n
+    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)}
+  
+    sd_current = getStandardDeviation(data1)
+    sd_power = getStandardDeviation(data2)
+    sd_voltage = getStandardDeviation(data3)
+    sd_lpm = getStandardDeviation(data4)
+  
+    $("#sd_current").text(sd_current)
+    $("#sd_power").text(sd_power) 
+    $("#sd_voltage").text(sd_voltage)
+    $("#sd_lpm").text(sd_lpm)
+  
+    function findVariance (arr) {
+      if(!arr.length){
+          return 0;
+      };
+      const sum = arr.reduce((acc, val) => acc + val);
+      const { length : num } = arr;
+      const median = sum / num;
+      let variance = 0;
+      arr.forEach(num => {
+          variance += ((num - median) * (num - median));
+      });
+      variance /= num;
+      return variance;}
+  
+    vari_current = findVariance(data1)
+    vari_power = findVariance(data2)
+    vari_voltage = findVariance(data3)
+    vari_lpm = findVariance(data4)
+  
+    $("#vari_current").text(vari_current)
+    $("#vari_power").text(vari_power) 
+    $("#vari_voltage").text(vari_voltage)
+    $("#vari_lpm").text(vari_lpm)
+  
+  
+    function calculateAverage(array) {
+      var total = 0;
+      var count = 0;
+  
+      array.forEach(function(item, index) {
+          total += item;
+          count++;
+      });
+  
+      return total / count}
+  
+      mean_current = calculateAverage(data1)
+      mean_power = calculateAverage(data2)
+      mean_voltage = calculateAverage(data3)
+      mean_lpm = calculateAverage(data4)
+  
+      function ParseFloat(str,val) {
+        str = str.toString();
+        str = str.slice(0, (str.indexOf(".")) + val + 1);
+        return Number(str);
+      }
+  
+    $("#mean_current").text(ParseFloat(mean_current,2))
+    $("#mean_power").text(ParseFloat(mean_power,2)) 
+    $("#mean_voltage").text(ParseFloat(mean_voltage,2))
+    $("#mean_lpm").text(ParseFloat(mean_lpm,2))
+    },
+  
+  error: function (jqXHR, textStatus, errorThrown) {
+    alert(errorThrown);
+  },
+  
+  })}
+  else{
+    // console.log(Math.floor((Date.parse($("#end_date").val()) - Date.parse($("#start_date").val())) / 86400000))
+    // console.log($("#start_date").val())
+    // console.log((end_date.val()))
+    alert("Select Dates Till 3 months")
+  }
+  ;});
+  
+  
+  
+  $("#senddata").click(function (e) {
+    create_token();
+    var payload_add = {
+      uuid: $("#uuid_graph").val(),
+      field: $("#field").val(),
+      start_date: $("#start_date").val(),
+      end_date: $("#end_date").val(),   
+      start_time: $("#start_time").val(),
+      end_time: $("#end_time").val(),    
+      };
+    uuid= $("#uuid_graph").val(),
+    headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/insight_current_week/"+uuid,
+      headers: headers_payload,
+      data: JSON.stringify(payload_add),
+      type: "POST",
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        $("#insights_week").text(data)
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      }
+      });
+  
+      $.ajax({
+        url: "/insight_current_month/"+uuid,
+        headers: headers_payload,
+        type: "POST",
+        success: function (data, textStatus, jqXHR) {
+          console.log(data)
+          $("#insights_month").text(data)
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+        }
+        });
+  
+        $.ajax({
+          url: "/insight_current_range",
+          headers: headers_payload,
+          data: JSON.stringify(payload_add),
+          type: "POST",
+          success: function (data, textStatus, jqXHR) {
+            console.log(data)
+            $("#insights_time").text(data)
+            $("#node_date").text(start_date+"-"+end_date) 
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          }
+          });
+  });
+  
+  
+  $("#print_graph").click(function (e){
+  e.preventDefault();
+    uuid= $("#uuid_graph").val(),
+    start_date= $("#start_date").val(),
+    end_date= $("#end_date").val(),   
+    start_time= $("#start_time").val(),
+    end_time= $("#end_time").val(),   
+    $("#node_name").text(uuid)
+    $("#node_date").text(start_date+"-"+end_date) 
+    $("#node_time").text(start_time+"-"+end_time) 
+  
+    //var HTML_Width = $("#pdf").width();
+      //var HTML_Height = $("#pdf").height();
+      //var top_left_margin = 15;
+      //var PDF_Width = HTML_Width+(top_left_margin*2);
+      //var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
+      //var canvas_image_width = HTML_Width;
+      //var canvas_image_height = HTML_Height;
+  
+      var HTML_Width = 1080;
+      var HTML_Height = 720;
+      var top_left_margin = 15;
+      var PDF_Width = HTML_Width+(top_left_margin*2);
+      var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
+      var canvas_image_width = HTML_Width;
+      var canvas_image_height = HTML_Height;
+      
+      var totalPDFPages = Math.ceil(HTML_Height/PDF_Height)-1;
+      
+  
+      html2canvas($("#canvas_div_pdf")[0],{allowTaint:true}).then(function(canvas) {
+          canvas.getContext('2d');
+          
+          console.log(canvas.height+"  "+canvas.width);
+          
+          
+          var imgData = canvas.toDataURL("image/jpeg", 1.0);
+          var pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
+          pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin,canvas_image_width,canvas_image_height);
+          
+          
+          for (var i = 1; i <= totalPDFPages; i++) { 
+              pdf.addPage(PDF_Width, PDF_Height);
+              pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+          }
+          
+          pdf.save("Document.pdf");
+      });
+  
+  });
+  
+  
+  $("#glance").click(function (e){
+  e.preventDefault();
+  var HTML_Width = $("#appender").width();
+  var HTML_Height = $("#appender").height();
+  var top_left_margin = 15;
+  var PDF_Width = HTML_Width+(top_left_margin*2);
+  var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
+  var canvas_image_width = HTML_Width;
+  var canvas_image_height = HTML_Height;
+  
+  var totalPDFPages = Math.ceil(HTML_Height/PDF_Height)-1;
+  
+  
+  html2canvas($("#appender")[0],{allowTaint:true}).then(function(canvas) {
+  canvas.getContext('2d');
+  
+  console.log(canvas.height+"  "+canvas.width);
+  
+  
+  var imgData = canvas.toDataURL("image/jpeg", 1.0);
+  var pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
+    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin,canvas_image_width,canvas_image_height);
+  
+  
+  for (var i = 1; i <= totalPDFPages; i++) { 
+    pdf.addPage(PDF_Width, PDF_Height);
+    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+  }
+  
+    pdf.save("Document.pdf");
+    });
+  
+  });
+  
+    //$("#sidebarToggleTop").click();
+  
+  //   $("#print_table").click(function (e){
+  //     create_token();
+  //     var payload_add = {
+  //     uuid: $("#uuid_graph").val(),
+  //     field: $("#field").val(),
+  //     start_date: $("#start_date").val(),
+  //     end_date: $("#end_date").val(),   
+  //     start_time: $("#start_time").val(),
+  //     end_time: $("#end_time").val(),    
+  //     };
+  //     headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+  //     $.ajax({
+  //     url: "/generateinvoice/",
+  //     headers: headers_payload,
+  //     type: "GET",
+  //     data: JSON.stringify(payload_add),
+  //     success: function (data, textStatus, jqXHR) {
+  //       data
+  //     }
+  //     })
+      
+  // });
+  
+      // $("#print_table").click(function (){
+      //   uuid= $("#uuid_graph").val(),
+      //   start_date= $("#start_date").val(),
+      //   end_date= $("#end_date").val(),   
+      //   start_time= $("#start_time").val(),
+      //   end_time= $("#end_time").val(),
+      //   $("#print_table").attr("href", "/generateinvoice/"+uuid+"/"+start_time+"/"+end_date+"/"+start_date+"/"+end_date+"/")
+      // })
+  
+  
+    
+    $("body").on("click", "#id-1", function (){
+      $("#appender").removeClass("d-none")
+      $(".class-2").addClass("d-none")
+      $(".class-3").addClass("d-none")
+      });
+  
+      $("body").on("click", "#id-2", function (){
+        $(".class-2").removeClass("d-none")
+        $("#appender").addClass("d-none")
+        $(".class-3").addClass("d-none")
+      });
+  
+      $("body").on("click", "#id-3", function (){
+        $(".class-3").removeClass("d-none")
+        $(".class-2").addClass("d-none")
+        $("#appender").addClass("d-none")
+      });
+  
+      $("body").on("click", "#node1", function (){
+  
+        navigator.geolocation.getCurrentPosition(success, error);
+  
+        function success(position) {
+            console.log(position.coords.latitude);
+            $('#latitude').val(position.coords.latitude);
+            console.log(position.coords.longitude);
+            $('#longitude').val(position.coords.longitude);
+  
+            var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en';
+  
+            $.getJSON(GEOCODING).done(function(location) {
+                console.log(location)
+            })
+  
+        }
+  
+        function error(err) {
+            console.log(err)
+        }
+  
+      });
+  
+  
+      $("body").on("click", "#create_user_button", function (e) {
+        create_token();
+        var payload = {
+          first_name: $("#user_fname").val(),
+          last_name: $("#user_lname").val(),
+          username: $("#user_uname").val(),
+          password: $("#user_pass").val(),
+          role: $('input[name="roles"]:checked').val(),
+          };
+          headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+  
+          if ((payload.first_name).length == 0 || (payload.last_name).length == 0 || (payload.username).length == 0 || (($('input[name="roles"]:checked')).length) == 0 ){
+            jQuery.noConflict(); 
+            $("#user_modal").modal("hide");
+            $('#fields').modal('show');
+          }
+          else{
+            $.ajax({
+              url: "/user_veiw",
+              type: "POST",
+              headers: headers_payload,
+              data : JSON.stringify(payload),
+              success: function (data, textStatus, jqXHR) {
+                jQuery.noConflict(); 
+                $('#user_create').modal('show');
+    
+               q = `<tr class="user_row_${data}">
+                <td>${data}</td>
+                <td>${payload.first_name} ${payload.last_name}</td>
+                <td>${payload.username}</td>
+                <td class="${payload.role}_${data}" >${payload.role}</td>
+                <td><div class=" btn-group">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Roles
+                  </button>
+                  <div class="mask dropdown-menu">
+                    <a class="mask dropdown-item super_admin" id="${data}">Super admin</a>
+                    <a class="mask dropdown-item admin" id="${data}">admin</a>
+                    <a class="mask dropdown-item observer" id="${data}">observer</a>
+                    <a class="mask dropdown-item user" id="${data}">user</a>
+                  </div>
+                </div></td>
+                <td><button type="button" class="btn btn-danger delete_user" id="${data}">Delete</button></td>
+              </tr>`,
+              $("#user_table").append(q),
+              $("#user_modal").modal("hide")
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+              },
+            });
+          }
+  
+          
+      });
+      
+      $("body").on("click", ".delete_user", function (e) {
+        create_token();
+  
+        id = this.id
+  
+        var payload = {
+          id : id,
+        }
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
+        $.ajax({
+          url: "/user_veiw",
+          type: "DELETE",
+          headers: headers_payload,
+          data : JSON.stringify(payload),
+          success: function (data, textStatus, jqXHR) {
+          $(".user_row_"+id).hide()
+          $('#user_delete_modal').modal('show');
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        });      
+        
+      });
+  
+  
+  
+      $("body").on("click", ".super_admin", function (e) {
+        create_token();
+  
+        id = this.id
+  
+        var payload = {
+          id : id,
+          role: 'super admins',
+        }
+        console.log(payload)
+  
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
+  
+        $.ajax({
+          url: "/user_veiw",
+          type: "PUT",
+          headers: headers_payload,
+          data : JSON.stringify(payload),
+          success: function (data, textStatus, jqXHR) {
+            $(".admins_"+id).text("super admins")
+            $(".admin_"+id).text("super admins")
+            $(".observer_"+id).text("super admins")
+            $(".user_"+id).text("super admins")
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        }); 
+  
+      });
+  
+  
+      $("body").on("click", ".admin", function (e) {
+        create_token();
+  
+        id = this.id
+  
+        var payload = {
+          id : id,
+          role: 'admin',
+        }
+        console.log(payload)
+  
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
+  
+        $.ajax({
+          url: "/user_veiw",
+          type: "PUT",
+          headers: headers_payload,
+          data : JSON.stringify(payload),
+          success: function (data, textStatus, jqXHR) {
+          $(".admins_"+id).text("admin")
+          $(".admin_"+id).text("admin")
+          $(".observer_"+id).text("admin")
+          $(".user_"+id).text("admin")
+  
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        }); 
+  
+      });
+  
+      $("body").on("click", ".observer", function (e) {
+        create_token();
+  
+        id = this.id
+  
+        var payload = {
+          id : id,
+          role: 'observer',
+        }
+        console.log(payload)
+  
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
+  
+        $.ajax({
+          url: "/user_veiw",
+          type: "PUT",
+          headers: headers_payload,
+          data : JSON.stringify(payload),
+          success: function (data, textStatus, jqXHR) {
+            $(".admins_"+id).text("observer")
+            $(".admin_"+id).text("observer")
+            $(".observer_"+id).text("observer")
+            $(".user_"+id).text("observer")
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        }); 
+  
+      });
+  
+      $("body").on("click", ".user", function (e) {
+        create_token();
+  
+        id = this.id
+  
+        var payload = {
+          id : id,
+          role: 'user',
+        }
+        console.log(payload)
+  
+        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
+  
+        $.ajax({
+          url: "/user_veiw",
+          type: "PUT",
+          headers: headers_payload,
+          data : JSON.stringify(payload),
+          success: function (data, textStatus, jqXHR) {
+            $(".admins_"+id).text("user")
+            $(".admin_"+id).text("user")
+            $(".observer_"+id).text("user")
+            $(".user_"+id).text("user")
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+          },
+        }); 
+  
+      });
+  
+  
+  })
+  
+    </script>
+  

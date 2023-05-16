@@ -1,0 +1,54 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  
+  $("#div1").load("/get_data_nodes?format=json");
+  
+  $("button").click(function(){
+
+    var payload = {
+      machine: "Donald Duck",
+      location: "Duckburg",
+      sub_location: "Donald Duck",
+      humidity: "Duckburg",
+      tempreture: "Donald Duck",
+      tempreture_low: "Duckburg",
+      tempreture_high: "Donald Duck",
+      battery: "Duckburg",
+      user_name: "Donald Duck",
+      user_id: "Duckburg",
+      user_name: "Donald Duck",
+      delete_status: "Duckburg",
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+    };
+ 
+     $.ajax({
+        url : "/post_data_nodes",
+        type: "POST",
+        data : payload,
+        success: function(data, textStatus, jqXHR)
+        {
+            //data - response from server
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+     
+        }
+    }); 
+
+  });
+
+
+});
+</script>
+</head>
+<body>
+
+<div id="div1"></div>
+
+<button>Get External Content</button>  
+
+</body>
+</html>

@@ -1,0 +1,842 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Dashboard</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css" />
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet" />
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" />
+  <style>
+    .backgroundColor {
+      background: linear-gradient(90deg, #414850, #131720);
+    }
+
+    .blueGradient {
+      background: linear-gradient(176deg, #3D9DEA, #4A4EEE);
+    }
+
+    .blackGradient {
+      /* background: linear-gradient(90deg, #414850, #131720); */
+      background: linear-gradient(120deg, #343A4F, #0F1620);
+    }
+
+    .borderRadiusTop {
+      border-radius: 20px 20px 0 0;
+    }
+
+    .borderRadiusBottom {
+      border-radius: 0 0 20px 20px;
+    }
+
+    .textColor {
+      color: #D5E1EF;
+    }
+  </style>
+
+</head>
+
+<body id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center" href="">
+        <div class="sidebar-brand-text mx-1">{{request.user.username}} </div>
+      </a>
+      <hr class="sidebar-divider my-0" />
+
+      <li class="nav-item d-flex align-items-center ">
+        <a class="nav-link" id="">
+          Role :<span id="menu_user"> {{ request.user.groups.all.0 }}</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0" />
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" id="id-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
+          </svg>
+          <span>Dashboard</span></a>
+      </li>
+      <hr class="sidebar-divider" />
+      <li class="nav-item active">
+        <a class="nav-link" id="id-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
+          </svg>
+          <span>Statistics</span></a>
+      </li>
+      <hr class="sidebar-divider" />
+      {% for group in user.groups.all %}
+      {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+      <li class="nav-item active">
+        <a class="nav-link" id="id-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+          </svg>
+          <span>User Management</span></a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      <hr class="sidebar-divider" />
+      <li class="nav-item active">
+        <a class="nav-link" id="#" href="/admin/node/post_nodes/export/" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z" />
+          </svg>
+          <span>Save Backup</span></a>
+      </li>
+      <hr class="sidebar-divider" />
+      <li class="nav-item active">
+        <a class="nav-link" id="#" href="/admin/node/post_nodes/import/" target="_blank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z" />
+          </svg>
+          <span>Upload Backup</span></a>
+      </li>
+      <hr class="sidebar-divider" />
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <!-- Main Content -->
+      <div id="content" class="">
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Search -->
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+            <!-- Nav Item - Messages -->
+            {% for group in user.groups.all %}
+            {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" id="node1" role="button"><span
+                  class="mr-2 d-none d-lg-inline text-gray-600 small">Add Node</span></a>
+              <!-- Dropdown - User Information -->
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <div class="dropdown">
+                <a class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">
+                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">Change Theme</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-1">Theme 1</a>
+                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-2">Theme 2</a>
+                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-3">Theme 3</a>
+                </div>
+              </div>
+            </li>
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="/glance" target="_blank" role="button"><span
+                  class="mr-2 d-none d-lg-inline text-gray-600 small">Glance tab</span></a>
+              <!-- Dropdown - User Information -->
+            </li>
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="/logout" role="button"><span
+                  class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span></a>
+              <!-- Dropdown - User Information -->
+            </li>
+            {% comment %} <a class="btn btn-primary" id="">Glance tab</a> {% endcomment %}
+          </ul>
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <div class="row" id="appender">
+            {% for i in data %}
+            <div class="card border-0 backgroundColor m-2" id="delete_node{{i.id}}"
+              style="width: 380px; border-radius: 20px 20px 20px 20px;">
+              <div class="d-flex flex-column p-4 blueGradient text-white borderRadiusTop border-0">
+                <div>
+                  <span class="  mb-1" style="letter-spacing: 3px;">UID:</span>
+                  <h4 class="font-weight-bold">
+                    <p class="UID{{i.id}}"> {{i.uuid}} </p>
+                  </h4>
+                </div>
+                <div class="my-3">
+                  <span class=" mb-1" style="letter-spacing: 3px;">Last Updated:</span>
+                  <h4 class="font-weight-bold" id="time{{i.uuid}}"></h4>
+                </div>
+                <div>
+                  <span class=" mb-1" style="letter-spacing: 3px;">Location:</span>
+                  <h4 class="font-weight-bold">
+                    <p class="location{{i.id}}"> {{i.location}}</p>
+                  </h4>
+                </div>
+              </div>
+              <div class="edit-class{{i.id}}">
+                <div class="d-flex flex-column p-4 blackGradient text-white borderRadiusBottom border-0">
+                  <h4 class="font-weight-bold mb-1">Machine: <a class="machine{{i.id}}"> {{i.machine}} </a>
+                  </h4>
+
+                  <h6 class="textColor border-bottom border-secondary pb-3" style="font-weight: 600;">Sub Location :
+                    {{i.sub_location}}</h6>
+                  <h6 class="textColor  border-secondary pb-3" style="font-weight: 600;">longitude : {{i.longitude}}
+                  </h6>
+                  <h6 class="textColor  border-bottom border-secondary pb-3" style="font-weight: 600;">latitude :
+                    {{i.latitude}}</h6>
+                  <h6 class="textColor  border-secondary pb-3" style="font-weight: 600;">Node Health : <a
+                      id="faulty{{i.uuid}}"></a></h6>
+
+                  <div class="d-flex align-items-center justify-content-between mt-3 mb-4">
+                    <div class="w-100">
+                      <h6 class="font-weight-bold textColor d-flex align-items-center">
+                        power
+                      </h6>
+                      <span class="textColor" id="power-{{i.uuid}}">{{i.power}}</span>
+                    </div>
+                    <div class="w-100">
+                      <h6 class="font-weight-bold textColor">current</h6>
+                      <span class="textColor" id="current-{{i.uuid}}">{{i.current}}</span>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="w-100">
+                      <h6 class="font-weight-bold textColor">voltage</h6>
+                      <span class="textColor" id="voltage-{{i.uuid}}">{{i.voltage}}</span>
+                    </div>
+                    <div class="w-100">
+                      <h6 class="font-weight-bold textColor">Battery</h6>
+                      <span class="textColor" id="battery-{{i.uuid}}">{{i.battery}}%</span>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="w-100">
+                      <h6 class="font-weight-bold textColor">lpm</h6>
+                      <span class="textColor" id="lpm-{{i.uuid}}">{{i.lpm}}</span>
+                    </div>
+                  </div>
+                  {% for group in user.groups.all %}
+                  {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+                  <div class="d-flex align-items-center justify-content-between blackGradient px-3 py-2 border-0"
+                    style="border-radius: 8px; box-shadow: 0 0 3px 1px rgb(85, 85, 85);">
+                    <h3>{{i.user_name}}</h3>
+                    <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary edit"
+                      id="{{i.id}}" style="border-radius: 10px;">
+                      Edit
+                    </button>
+                    <button class="px-4 py-2 text-white border-0 d-flex align-content-center bg-primary lala"
+                      id="{{i.id}}" style="border-radius: 10px;">
+                      Delete
+                    </button>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="current_low{{i.id}}" value="{{i.current_low}}" />
+            <input type="hidden" id="current_high{{i.id}}" value="{{i.current_high}}" />
+            <input type="hidden" id="power_low{{i.id}}" value="{{i.power_low}}" />
+            <input type="hidden" id="power_high{{i.id}}" value="{{i.power_high}}" />
+            <input type="hidden" id="voltage_low{{i.id}}" value="{{i.voltage_low}}" />
+            <input type="hidden" id="voltage_high{{i.id}}" value="{{i.voltage_high}}" />
+            <input type="hidden" id="lpm_low{{i.id}}" value="{{i.lpm_low}}" />
+            <input type="hidden" id="lpm_high{{i.id}}" value="{{i.lpm_high}}" />
+            {% endfor %}
+          </div>
+
+          <!-- Content Row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <!-- End of Footer -->
+        {% comment %} ----------------------------------------------------------------------------------------------- {%
+        endcomment %}
+        {% comment %} {% include "commondata.html" %} {% endcomment %}
+        <div class="class-2 d-none">
+          <div class="card shadow m-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Statistics</h6>
+              <div class="dropdown no-arrow">
+                {% comment %} <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a> {% endcomment %}
+              </div>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+              Fill the value below to get the trends for nodes.
+              <form>
+                <div class="form-row align-items-center my-1 m-5">
+                  <div class="col-sm-2 my-1">
+                    <label for="uuid_graph">UID</label>
+                    <input type="text" class="form-control" id="uuid_graph" placeholder="UID">
+                  </div>
+                  <div class="col-sm-2 my-1">
+                    <label for="start_date">Start Date</label>
+                    <input type="date" class="form-control" id="start_date" placeholder="start date">
+                  </div>
+                  <div class="col-sm-2 my-1">
+                    <label for="end_date">End Date</label>
+                    <input type="date" class="form-control" id="end_date" placeholder="end date">
+                  </div>
+                  <div class="col-sm-2 my-1">
+                    <label for="start_time">Start Time</label>
+                    <input type="time" class="form-control" id="start_time" placeholder="start time">
+                  </div>
+                  <div class="col-sm-2 my-1">
+                    <label for="end_time">End Time</label>
+                    <input type="time" class="form-control" id="end_time" placeholder="end time">
+                  </div>
+                  <div class="col-sm-2 my-1 align-self-end">
+                    <button type="submit" class="btn btn-primary" id="senddata">Submit</button>
+                  </div>
+                </div>
+            </div>
+            </form>
+          </div>
+          <div class="row justify-content-center">
+
+            <div class="col-xl-11 col-lg-6 m-2">
+
+              <!-- Area Chart -->
+              <div class="card shadow mb-4" id="pdf">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Area Chart
+                    <button type="submit" class="btn btn-primary float-right mx-2" id="print_graph">Print Graph</button>
+                    <a id="print_table" href="#" target="_blank"><button type="submit"
+                        class="btn btn-primary float-right mx-2">Print Table</button></a>
+                  </h6>
+                </div>
+                <div class="card-body canvas_div_pdf" id="canvas_div_pdf">
+                  <code class="col-2">Node :</code><a id="node_name"></a>
+                  <p> </p>
+                  <code class="col-2">Date :</code> <a id="node_date"></a>
+                  <p> </p>
+                  <code class="col-2">Time :</code> <a id="node_time"></a>
+                  <p> </p>
+                  <div class="row">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">current</th>
+                          <th scope="col">power</th>
+                          <th scope="col">voltage</th>
+                          <th scope="col">lpm</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">standard deviation</th>
+                          <td id="sd_current"></td>
+                          <td id="sd_power"></td>
+                          <td id="sd_voltage"></td>
+                          <td id="sd_lpm"></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">variance</th>
+                          <td id="vari_current"></td>
+                          <td id="vari_power"></td>
+                          <td id="vari_voltage"></td>
+                          <td id="vari_lpm"></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">mean</th>
+                          <td id="mean_current"></td>
+                          <td id="mean_power"></td>
+                          <td id="mean_voltage"></td>
+                          <td id="mean_lpm"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <hr>
+                  <div class="chart-area" id="graph_div">
+                    <canvas id="myAreaChart"></canvas>
+                  </div>
+                  <hr>
+                  <div class="row mx-4 my-3">
+                    <div class="" style="color:#d45087">●</div>
+                    <p> current</p>
+                    <div class="" style="color:rgba(78, 115, 223, 1)">●</div>
+                    <p> power</p>
+                    <div class="" style="color:yellow">●</div>
+                    <p> voltage</p>
+                    <div class="" style="color:purple">●</div>
+                    <p> lpm</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card shadow mb-4 class-2 d-none">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Insights</h6>
+                </div>
+                <div class="card-body">
+                  <p>Your Node Went Faulty for <a id="insights_week">____</a> Time(s) In This Week</p>
+                  <hr>
+                  <p>Your Node Went Faulty for <a id="insights_month">____</a> Time(s) In Last 30 days</p>
+                  <hr>
+                  <p>Your Node Went Faulty for <a id="insights_time">____</a> Time(s) between
+                  <div id="node_date"></div>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow mb-4 class-3 mx-3 d-none">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">User Management</h6>
+          </div>
+          <div class="card-header py-3">
+            <button type="button" class="btn btn-primary" id="add_user">Add User</button>
+          </div>
+          <div class="card-body class-3 d-none">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>Name</th>
+                    <th>user name</th>
+                    <th>role</th>
+                    <th>change role</th>
+                    <th>delete user</th>
+                  </tr>
+                </thead>
+                <tbody id="user_table">
+                  {% for i in users %}
+                  <tr class="user_row_{{i.id}}">
+                    <td>{{i.id}}</td>
+                    <td>{{i.first_name}} {{i.last_name}}</td>
+                    <td>{{i.username}}</td>
+                    <td class="{{ i.groups.all.0 }}_{{i.id}}">{{ i.groups.all.0 }}</td>
+                    <td>
+                      <div class=" btn-group">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">
+                          Roles
+                        </button>
+                        <div class="mask dropdown-menu">
+                          <a class="mask dropdown-item super_admin" id="{{i.id}}">super admin</a>
+                          <a class="mask dropdown-item admin" id="{{i.id}}">admin</a>
+                          <a class="mask dropdown-item observer" id="{{i.id}}">observer</a>
+                          <a class="mask dropdown-item user" id="{{i.id}}">user</a>
+                        </div>
+                      </div>
+                    </td>
+                    <td><button type="button" class="btn btn-danger delete_user" id="{{i.id}}">Delete</button></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Select "Logout" below if you are ready to end your current session.
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">
+            Cancel
+          </button>
+          <a class="btn btn-primary" href="">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Node</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="UID">UID</label>
+            <input type="text" class="form-control" id="UID" placeholder="UID" />
+          </div>
+          <div class="form-group">
+            <label for="location">location</label>
+            <input type="text" class="form-control" id="location" placeholder="location" />
+          </div>
+          <div class="form-group">
+            <label for="sub_location">sub_location</label>
+            <input type="text" class="form-control" id="sub_location" placeholder="sub_location" />
+          </div>
+          <div class="form-group">
+            <label for="machine">machine</label>
+            <input type="text" class="form-control" id="machine" placeholder="machine" />
+          </div>
+          <div class="form-group">
+            <label for="email">email</label>
+            <input type="email" class="form-control" id="email" placeholder="email" />
+          </div>
+          <div class="form-group">
+            <label for="longitude ">longitude </label>
+            <input type="text" class="form-control" id="longitude" placeholder="longitude " value="" />
+          </div>
+          <div class="form-group">
+            <label for="latitude ">latitude </label>
+            <input type="text" class="form-control" id="latitude" placeholder="latitude " value="" />
+          </div>
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="power low" id="power_low">
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="power high" id="power_high">
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="current low" id="current_low">
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="current high" id="current_high">
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="voltage_low" id="voltage_low">
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="voltage_high" id="voltage_high">
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="lpm_low" id="lpm_low">
+            </div>
+            <div class="col">
+              <input type="text" class="form-control" placeholder="lpm_high" id="lpm_high">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_node">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" id="add_node">
+            Add Node
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="changes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Saved !</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Changes Saved Successfully!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="add_node_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Saved !</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Node Added Successfully!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="user_create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Saved !</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          User Created Successfully!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="fields" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Saved !</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Please Select All Fields!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="user_delete_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Successfull !</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          User Deleted Successfully!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="password_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Enter Password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-content">
+          <div class="modal-body">
+            {% comment %} <form class="d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+              {% endcomment %}
+              <div class="input-group">
+                <input type="password" class="form-control bg-light border-0 small" placeholder="Enter Password"
+                  aria-label="Search" aria-describedby="basic-addon2" id="password" />
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key"
+                      viewBox="0 0 16 16">
+                      <path
+                        d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z" />
+                      <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              {% comment %}
+            </form> {% endcomment %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="user_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="UID">First Name</label>
+            <input type="text" class="form-control" id="user_fname" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="UID">Last Name</label>
+            <input type="text" class="form-control" id="user_lname" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="UID">User Name</label>
+            <input type="text" class="form-control" id="user_uname" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="location">Password</label>
+            <input type="text" class="form-control" id="user_pass" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="location">Select User’s Role</label>
+          </div>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="roles" id="inlineRadio1" value="super admins">
+              <label class="form-check-label" for="inlineRadio1">Super Admin</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="roles" id="inlineRadio2" value="admin">
+              <label class="form-check-label" for="inlineRadio2">Admin</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="roles" id="inlineRadio3" value="observer">
+              <label class="form-check-label" for="inlineRadio3">observer</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="roles" id="inlineRadio4" value="user">
+              <label class="form-check-label" for="inlineRadio3">User</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_node2">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" id="create_user_button">
+            Add User
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  {% comment %}
+  <script src="{% static 'adminfile.js' %}"></script> {% endcomment %}
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  {% comment %}
+  <script src="{% static 'js/demo/chart-area-demo.js' %}"></script> {% endcomment %}
+
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM="
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+  {% include "adminfile2.html" %}
+
+</body>
+
+</html>

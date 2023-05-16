@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+
+<h2>Node Name : {{uuid}}</h2>
+<h2>Node date : {{date}}</h2>
+<h2>Node time : {{time}}</h2>
+
+
+<table>
+  <tr>
+    <th>Temperature</th>
+    <th>CO2</th>
+    <th>Humidity</th>
+    <th>Time</th>
+  </tr>
+  {% for i  in pri %}
+  <tr>
+    <td>{{i.current}}</td>
+    <td>{{i.voltage}}</td>
+    <td>{{i.power}}</td>
+    <td>{{i.time}}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>
+
