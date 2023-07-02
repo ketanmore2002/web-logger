@@ -1,64 +1,180 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Glance Tab</title>
-  </head>
-  <body>
-    {% for i in data %}
-        <table class="table table-bordered my-5">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">UID</th>
-                <th scope="col">User Name</th>
-                <th scope="col">Mail</th>
-                <th scope="col">location</th>
-                <th scope="col">Sub location</th>
-                <th scope="col">Machine</th>
-                <th scope="col">Humidity</th>
-                <th scope="col">Low Humidity</th>
-                <th scope="col">High Humidity</th>
-                <th scope="col">current</th>
-                <th scope="col">Low current</th>
-                <th scope="col">High current</th>
-                <th scope="col">voltage</th>
-                <th scope="col">Low voltage</th>
-                <th scope="col">High voltage</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ i.uuid }}</td>
-                <td>{{ i.user_name }}</td>
-                <td>{{ i.email }}</td>
-                <td>{{ i.location }}</td>
-                <td>{{ i.sub_location }}</td>
-                <td>{{ i.machine }}</td>
-                <td>{{ i.power }}</td>
-                <td>{{ i.power_low }}</td>
-                <td>{{ i.power_high }}</td>
-                <td>{{ i.current }}</td>
-                <td>{{ i.current_low }}</td>
-                <td>{{ i.current_high }}</td>
-                <td>{{ i.voltage }}</td>
-                <td>{{ i.voltage_low }}</td>
-                <td>{{ i.voltage_high }}</td>
-              </tr>
-            </tbody>
-          </table>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <title>Glance</title>
+
+
+  <style>
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #canvas_div_pdf,
+      #canvas_div_pdf * {
+        visibility: visible;
+      }
+
+      #canvas_div_pdf {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        page-break-inside: avoid;
+      }
+
+      @page {
+        /* Adjust margins and page size for printing */
+        margin: 1cm;
+      }
+
+      #accordionSidebar {
+        display: navbar;
+      }
+
+    }
+  </style>
+
+
+
+</head>
+
+<body>
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+      <a class="navbar-brand" href="/admin_panel">Glance View</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light my-2" id="navbar">
+      
+      <div class="navbar-brand" id="navbarSupportedContent">
+        <a><button class="btn btn-outline-success my-2 my-sm-0" type="" id="" onclick="window.close()" >Back</button></a>
+      </div>
+
+      <div class="navbar-brand" id="navbarSupportedContent">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="" id="print_graph_1">Print</button>
+      </div>
+    </nav>
+
+    <table class="table table-striped my-2 border" id="canvas_div_pdf">
+      <thead class="thead">
+        <tr>
+          <th scope="col">uuid</th>
+          <th scope="col">Location</th>
+          <th scope="col">Current</th>
+          <th scope="col">Voltage</th>
+          <th scope="col">Power</th>
+          <th scope="col">Generator Speed</th>
+          <th scope="col">Windspeed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in data %}
+        <tr>
+          <td>{{i.uuid}}</td>
+          <td>{{i.location}}</td>
+
+          {% for j in current_para %}
+          {% if i.uuid == j.uuid %}
+          {% for k in current%}
+          {% if k.uuid == j.uuid %}
+          <td>{{k.current}}</td>
+          {% endif %}
           {% endfor %}
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
+          {% endif %}
+          {% endfor %}
+
+          {% for j in voltage_para %}
+          {% if i.uuid == j.uuid %}
+          {% for k in voltage%}
+          {% if k.uuid == j.uuid %}
+          <td>{{k.voltage}}</td>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+
+          {% for j in power_para %}
+          {% if i.uuid == j.uuid %}
+          {% for k in power%}
+          {% if k.uuid == j.uuid %}
+          <td>{{k.power}}</td>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+
+          {% for j in generator_speed_para %}
+          {% if i.uuid == j.uuid %}
+          {% for k in generator_speed%}
+          {% if k.uuid == j.uuid %}
+          <td>{{k.generator_speed}}</td>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+
+          {% for j in power_para %}
+          {% if i.uuid == j.uuid %}
+          {% for k in power%}
+          {% if k.uuid == j.uuid %}
+          <td>{{k.power}}</td>
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+  <script>
+    function printDiv(divId) {
+      var divToPrint = document.getElementById(divId);
+
+      //var navbar = document.getElementById("accordionSidebar");
+      //navbar.style.visibility = 'hidden';
+
+      divToPrint.style.visibility = 'visible';
+      window.print();
+      // Reset visibility after printing (optional)
+      divToPrint.style.visibility = 'visible';
+      //navbar.style.visibility = 'visible';
+    }
+
+
+    var printButton = document.getElementById('print_graph_1');
+    printButton.addEventListener('click', function () {
+      printDiv("canvas_div_pdf")
+    });
+  </script>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
 </html>

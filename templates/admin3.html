@@ -17,6 +17,11 @@
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tinos&display=swap" rel="stylesheet">
+
+
   <!-- Custom styles for this template-->
   <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet" />
   <style>
@@ -45,13 +50,73 @@
       color: #b6d5f8;
     }
 
+    .center-button-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3; /* Higher z-index to keep the button above the blur */
+    }
+
+    .center-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      outline: none;
+    }
+
+    .blur-div {
+      filter: blur(5px); /* Apply blur effect to the background image */
+    }
+
     .backgroundImage {
       background-color: #010926;
-      background-image: url("{% static 'card4.svg' %}");
+      background-image: url("{% static 'card5.svg' %}");
       /* background-attachment: fixed;
       background-size: cover; */
       /* background-position-y: -80px; */
     }
+
+    * {
+      font-family: 'Tinos', serif;
+    }
+
+    .dropdown-menu {
+      width: 400px !important;
+      min-height: 100px !important;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      
+      #canvas_div_pdf,
+      #canvas_div_pdf * {
+        visibility: visible;
+      }
+
+      #canvas_div_pdf {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        page-break-inside: avoid;
+      }
+
+      @page {
+        /* Adjust margins and page size for printing */
+        margin: 1cm;
+      }
+
+      #accordionSidebar{
+        display: none;
+      }
+
+    }
+
+    
   </style>
 
 </head>
@@ -67,9 +132,9 @@
       </a>
       <hr class="sidebar-divider my-0" />
 
-      <li class="nav-item d-flex align-items-center ">
+      <li class="nav-item d-flex align-items-center active">
         <a class="nav-link" id="">
-          Role :<span id="menu_user"> {{ request.user.groups.all.0 }}</span></a>
+          Role :<span id="menu_user" style="font-size:larger;"> {{ request.user.groups.all.0 }}</span></a>
       </li>
 
       <!-- Divider -->
@@ -83,7 +148,7 @@
             <path fill-rule="evenodd"
               d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z" />
           </svg>
-          <span>Dashboard</span></a>
+          <span style="font-size:larger;">Dashboard</span></a>
       </li>
       <hr class="sidebar-divider" />
       <li class="nav-item active">
@@ -93,11 +158,11 @@
             <path fill-rule="evenodd"
               d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
           </svg>
-          <span>Statistics</span></a>
+          <span style="font-size:larger;">See Trends</span></a>
       </li>
       <hr class="sidebar-divider" />
       {% for group in user.groups.all %}
-      {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+      {% if group.name == 'administrator' or group.name == 'admin'%}
       <li class="nav-item active">
         <a class="nav-link" id="id-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill"
@@ -105,32 +170,25 @@
             <path
               d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
           </svg>
-          <span>User Management</span></a>
+          <span style="font-size:larger;">User Management</span></a>
       </li>
       <hr class="sidebar-divider" />
       {% endif %}
       {% endfor %}
+      {% for group in user.groups.all %}
+      {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
       <li class="nav-item active">
-        <a class="nav-link" id="#" href="/admin/node/post_nodes/export/" target="_blank">
+        <a class="nav-link" id="id-4">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
             <path fill-rule="evenodd"
               d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z" />
           </svg>
-          <span>Save Backup</span></a>
+          <span style="font-size:larger;">Backup</span></a>
       </li>
       <hr class="sidebar-divider" />
-      <li class="nav-item active">
-        <a class="nav-link" id="#" href="/admin/node/post_nodes/import/" target="_blank">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-            class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z" />
-          </svg>
-          <span>Upload Backup</span></a>
-      </li>
-      <hr class="sidebar-divider" />
-
+      {% endif %}
+      {% endfor %}
     </ul>
     <!-- End of Sidebar -->
 
@@ -146,179 +204,259 @@
           </button>
 
           <!-- Topbar Search -->
-          {% comment %} <li class="">
-          <h3>Breeze Power Mill</h3>
+          <ul class="mt-2 justify-content-start text-dark">
+            <h2>Breeze Power Mill Data Logger</h2>
             <!-- Dropdown - User Information -->
-          </li> {% endcomment %}
+          </ul>
+
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
-            <!-- Nav Item - Messages -->
             {% for group in user.groups.all %}
-            {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
+            {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
+
             <div class="topbar-divider d-none d-sm-block"></div>
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" id="node1" role="button"><span
-                  class="mr-2 d-none d-lg-inline text-gray-600 small">Add Node</span></a>
+
+            <li class="nav-item dropdown no-arrow" id="">
+
+              <a class="nav-link dropdown-toggle" id="notification-center" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false"><span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                  <button type="button" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-bell-fill" viewBox="0 0 16 16">
+                      <path
+                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+                    </svg>
+                    <span class="badge badge-light" id="notifications-counter"></span>
+                  </button>
+                </span>
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="notification-center" id="notification-list">
+                {% comment %} {% if notifications.count > 0 %}
+                {% for notification in notifications %}
+                <a class="dropdown-item bg-transparent" id="notification-{{notification.node_id}}">
+                  <div class="noti rounded border-dark border">
+                    <div class="toast-header">
+                      <strong class="mr-auto h4"> {{notification.uuid}} node as been deleted</strong>
+                    </div>
+                    <div class="toast-body">
+                      Please Take a action :
+                    </div>
+                      <div class="row toast-body">
+                        <button type="button" class="btn btn-primary col-4 mx-2 noti-center" id="{{notification.node_id}}"
+                          data-node-name="{{notification.uuid}}">Change User</button>
+                        <button type="button" class="btn btn-danger col-4 mx-1 noti-delete" id="{{notification.node_id}}"
+                          data-node-name="{{notification.uuid}}">Delete Node</button>
+                      </div>
+                  </div>
+                </a>
+                {% endfor %}
+                {% else %}
+
+                <a class="dropdown-item bg-transparent" id="">
+                  <div class="noti rounded border-dark border">
+                    <div class="toast-header">
+                      <strong class="mr-auto h4"> No Notifications </strong>
+                    </div>
+                  </div>
+                </a>
+
+                {% endif %} {% endcomment %}
+              </div>
+
               <!-- Dropdown - User Information -->
             </li>
             {% endif %}
             {% endfor %}
 
-            <div class="topbar-divider d-none d-sm-block"></div>
+            <!-- Nav Item - Messages -->
+            {% for group in user.groups.all %}
+            {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
 
-            <!-- Nav Item - User Information -->
+            <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
-              <div class="dropdown">
-                <a class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                  aria-haspopup="true" aria-expanded="false">
-                  <span class="mr-2 d-none d-lg-inline text-gray-600 small">Change Theme</span>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-1">Theme 1</a>
-                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-2">Theme 2</a>
-                  <a class="dropdown-item" href="/change_theme/{{request.user.id}}/theme-3">Theme 3</a>
-                </div>
-              </div>
+              <a class="nav-link dropdown-toggle" id="node1" role="button"><span
+                  class="mr-2 d-none d-lg-inline text-gray-600 small"><button type="button" class="btn btn-primary">Add
+                    Node</button>
+                </span>
+              </a>
+              <!-- Dropdown - User Information -->
+            </li>
+
+            {% endif %}
+            {% endfor %}
+
+
             </li>
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="/glance" target="_blank" role="button"><span
-                  class="mr-2 d-none d-lg-inline text-gray-600 small">Glance tab</span></a>
+                  class="mr-2 d-none d-lg-inline text-gray-600 small"><button type="button"
+                    class="btn btn-primary">Glance Tab</button></span></a>
               <!-- Dropdown - User Information -->
             </li>
             <div class="topbar-divider d-none d-sm-block"></div>
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="/logout" role="button"><span
-                  class="mr-2 d-none d-lg-inline text-gray-600 small">Logout</span></a>
+                  class="mr-2 d-none d-lg-inline text-gray-600 small"><button type="button"
+                    class="btn btn-primary">Logout</button></span></a>
               <!-- Dropdown - User Information -->
             </li>
-            {% comment %} <a class="btn btn-primary" id="">Glance tab</a> {% endcomment %}
           </ul>
         </nav>
-        <!-- End of Topbar -->
 
-        <!-- Begin Page Content -->
         <div class="container-fluid">
           <div class="row" id="appender">
             {% for i in data %}
             <div
-              class="position-relative card d-flex flex-column justify-content-between border-0 py-4 backgroundImage overflow-hidden m-3"
-              id="delete_node{{i.id}}" style="width: 380px; border-radius: 20px 20px 20px 20px;">
-              <div class="d-flex flex-column mx-4 textColor pb-2 border-bottom border-secondary" style="z-index: 10;">
-                <h4 class="font-weight-bold mb-1">UID : <a class="textColor UID{{i.id}}"> {{i.uuid}} </a></h4>
-                <h6 class="textColor" style="font-weight: 600;">Location: <a class="textColor location{{i.id}}">
-                    {{i.location}}</a></h6>
+            class="position-relative card d-flex flex-column justify-content-between border-0 py-4 backgroundImage overflow-hidden m-1"
+            id="delete_node{{i.id}}" style="width: 380px; border-radius: 20px 20px 20px 20px;">
+
+              <div class="row border-bottom border-secondary">
+
+                <div class="col-6 d-flex flex-column textColor pb-2 mx-4 " style="z-index: 10;">
+                  <h4 class="font-weight-bold mb-1">UID : <a class="textColor UID{{i.id}}"> {{i.uuid}} </a></h4>
+                  <h6 class="textColor roboto" style="font-weight: 600;">Location: <a
+                      class="textColor location{{i.id}}">
+                      {{i.location}}</a></h6>
+                </div>
+
+                <div class="col-4 textColor pb-2">
+                  <h3 class="justify-content-end" style="font-weight: 500; font-size: 25px">
+                    {% if i.activate == "False" %}
+                    <a href="/admin_panel"> <button type="button" class="btn btn-danger">Activate</button> </a> 
+                    {% else %}
+                    <a id="faulty{{i.uuid}}"></a>
+                    {% endif %}
+                  </h3>
+                </div>
               </div>
 
-              <div class="flex-grow-1 d-flex flex-column textColor mx-4 px-2 py-3 my-3" style="z-index: 10;">
-                <div class="edit-class{{i.id}}">
-                  <div class="w-100 d-flex flex-column align-items-center justify-content-between">
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">power</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="power-{{i.uuid}}">{{i.power}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">current</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="current-{{i.uuid}}">{{i.current}}</h5>
-                    </div>
+              <div class="flex-grow-1 d-flex flex-column textColor mx-4 px-2 py-3 my-2" style="z-index: 10;">
+
+                  {% for k in voltage_para %}
+                  {% if i.uuid == k.uuid %}
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Voltage</p>
+                    {% for j in voltage %}
+                    {% if i.uuid == j.uuid and i.uuid == k.uuid %}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="voltage-{{j.uuid}}" >{{j.voltage}}</a> V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% endif %}
+                    {% endfor %}
                   </div>
-                  <div class="d-flex flex-column align-items-center justify-content-between">
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">voltage</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="voltage-{{i.uuid}}">{{i.voltage}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Energy</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="energy-{{i.uuid}}">{{i.energy}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Power Factor</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="power_factor-{{i.uuid}}">{{i.power_factor}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Frequency</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="frequency-{{i.uuid}}">{{i.frequency}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">WindSpeed</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="windspeed-{{i.uuid}}">{{i.windspeed}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Shaft Speed (RPM)</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="shaft_speed-{{i.uuid}}">{{i.shaft_speed}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Torque</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="torque-{{i.uuid}}">{{i.torque}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Battery</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="battery-{{i.uuid}}">{{i.battery}}</h5>
-                    </div>
-                    <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Node Health : </p>
-                      <h5 class="font-weight-bold textColor mb-1"><a id="faulty{{i.uuid}}">Healthy</a></h5>
-                    </div>
+                  {% endif %}
+                  {% endfor %}
+
+                  {% for k in current_para %}
+                  {% if i.uuid == k.uuid %}
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Current</p>
+                    {% for j in current %}
+                    {% if i.uuid == j.uuid and i.uuid == k.uuid%}
+                    <h5 class="font-weight-bold textColor mb-1"> <a id="current-{{j.uuid}}" >{{j.current}}</a>  A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% endif %}
+                    {% endfor %}
                   </div>
-                </div>
+                  {% endif %}
+                  {% endfor %}
+
+
+                  {% for k in power_para %}
+                  {% if i.uuid == k.uuid %}
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Power</p>
+                    {% for j in power %}
+                    {% if i.uuid == j.uuid and i.uuid == k.uuid%}
+                    <h5 class="font-weight-bold textColor mb-1"> <a id="power-{{i.uuid}}" > {{j.power}} </a>  W &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+
+                  {% for k in generator_speed_para %}
+                  {% if i.uuid == k.uuid %}
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Generator Speed</p>
+                    {% for j in generator_speed %}{% if i.uuid == j.uuid and i.uuid == k.uuid%}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="generator_speed-{{j.uuid}}" > {{j.generator_speed}} </a>
+                      RPM&nbsp;&nbsp;</h5>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+
+                  {% for k in windspeed_para %}
+                  {% if i.uuid == k.uuid %}
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">WindSpeed</p>
+                    {% for j in windspeed %}{% if i.uuid == j.uuid and i.uuid == k.uuid%}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{j.uuid}}" > {{j.windspeed}} </a> </h5>
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+
+
+                  <div class="w-100 d-flex align-items-center justify-content-between ">
+                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Battery</p>
+                    <h5 class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}} </a>
+                      %&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                  </div>
               </div>
 
               <div class="flex-grow-0 d-flex flex-column px-4 py-2 mx-4 border border-dark"
                 style="border-radius: 12px;">
+
                 <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold">Machine :</span>
+                  <span class="mr-2 text-white font-weight-bold roboto">Username:</span>
+                  <h6 class="font-weight-bold mb-0 text-white">{{i.user_name}}</h6>
+                </div>
+
+                <div class="mb-2 d-flex align-items-center justify-content-between">
+                  <span class="mr-2 text-white font-weight-bold roboto">Machine :</span>
                   <h6 class="font-weight-bold mb-0 text-white"><a class="textColor machine{{i.id}}"> {{i.machine}} </a>
                   </h6>
                 </div>
+
                 <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold">Last Updated:</span>
-                  <h6 class="font-weight-bold mb-0 text-white" id="time{{i.uuid}}"></h6>
-                </div>
-                <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold">Sub Location:</span>
+                  <span class="mr-2 text-white font-weight-bold roboto">Sub Location:</span>
                   <h6 class="font-weight-bold mb-0 text-white"><a class="textColor sub_location{{i.id}}">
                       {{i.sub_location}}</a></h6>
                 </div>
-                <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold">Username:</span>
-                  <h6 class="font-weight-bold mb-0 text-white">{{i.user_name}}</h6>
-                </div>
+
                 {% for group in user.groups.all %}
-                {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
-                <div class="w-100 d-flex align-items-center justify-content-between mt-2" style="border-radius: 8px;">
-                  <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold edit"
-                    id="{{i.id}}" style="border-radius: 8px; background-color: #fc5296;
+                {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
+
+                <div class="row">
+                  <div class="col-6 w-100 d-flex align-items-center justify-content-between mt-2"
+                    style="border-radius: 8px;">
+                    <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold edit"
+                      id="{{i.uuid}}" style="border-radius: 8px; background-color: #fc5296;
                       background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);">
-                    Edit
-                  </button>
-                </div>
-                <div class="w-100 d-flex align-items-center justify-content-between mt-2" style="border-radius: 8px;">
-                  <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold lala"
-                    id="{{i.id}}" style="border-radius: 8px; background-color: #fc5296;
+                      Edit
+                    </button>
+                  </div>
+
+                  <div class=" col-6 w-100 d-flex align-items-center justify-content-between mt-2"
+                    style="border-radius: 8px;">
+                    <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold lala"
+                      id="{{i.id}}" style="border-radius: 8px; background-color: #fc5296;
                     background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);">
-                    Delete
-                  </button>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <input type="hidden" id="current_low{{i.id}}" value="{{i.current_low}}" />
-                <input type="hidden" id="current_high{{i.id}}" value="{{i.current_high}}" />
-                <input type="hidden" id="power_low{{i.id}}" value="{{i.power_low}}" />
-                <input type="hidden" id="power_high{{i.id}}" value="{{i.power_high}}" />
-                <input type="hidden" id="voltage_low{{i.id}}" value="{{i.voltage_low}}" />
-                <input type="hidden" id="voltage_high{{i.id}}" value="{{i.voltage_high}}" />
-                <input type="hidden" id="energy_high{{i.id}}" value="{{i.energy_high}}" />
-                <input type="hidden" id="energy_low{{i.id}}" value="{{i.energy_low}}" />
-                <input type="hidden" id="power_factor_high{{i.id}}" value="{{i.power_factor_high}}" />
-                <input type="hidden" id="power_factor_low{{i.id}}" value="{{i.power_factor_low}}" />
-                <input type="hidden" id="frequency_high{{i.id}}" value="{{i.frequency_high}}" />
-                <input type="hidden" id="frequency_low{{i.id}}" value="{{i.frequency_low}}" />
-                <input type="hidden" id="windspeed_high{{i.id}}" value="{{i.windspeed_high}}" />
-                <input type="hidden" id="windspeed_low{{i.id}}" value="{{i.windspeed_low}}" />
-                <input type="hidden" id="shaft_speed_high{{i.id}}" value="{{i.shaft_speed_high}}" />
-                <input type="hidden" id="shaft_speed_low{{i.id}}" value="{{i.shaft_speed_low}}" />
-                <input type="hidden" id="torque_high{{i.id}}" value="{{i.torque_high}}" />
-                <input type="hidden" id="torque_low{{i.id}}" value="{{i.torque_low}}" />
                 {% endif %}
                 {% endfor %}
+
+
+                <div class="m-2 d-flex align-items-center justify-content-between">
+                  <span class="mr-2 text-white font-weight-bold roboto">Last Updated :</span>
+                  <h6 class="font-weight-bold mb-0 text-white" id="time{{i.uuid}}"></h6>
+                </div>
               </div>
             </div>
             {% endfor %}
@@ -327,7 +465,7 @@
           <!-- Content Row -->
         </div>
         <div class="class-2 d-none">
-          <div class="card shadow m-4">
+          <div class="card shadow m-4 filter" id="filter">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 class="m-0 font-weight-bold text-primary">Statistics</h6>
@@ -368,24 +506,27 @@
           </div>
           <div class="row justify-content-center">
 
-            <div class="col-xl-11 col-lg-6 m-2">
+            <div class="col-xl-11 col-lg-6 m-2 d-none stats-area" id="stats-area">
 
               <!-- Area Chart -->
               <div class="card shadow mb-4" id="pdf">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Area Chart
-                    <button type="submit" class="btn btn-primary float-right mx-2" id="print_graph">Print Graph</button>
-                    <a id="print_table" href="#" target="_blank"><button type="submit"
-                        class="btn btn-primary float-right mx-2">Print Table</button></a>
+                  <h6 class="m-0 font-weight-bold text-primary"><!-- Area Chart -->
+                    <button type="submit" class="btn btn-primary float-right mx-2" id="print_graph_1" onclick="printDiv('canvas_div_pdf')">Print Graph</button>
+                    <a id="print_table" href="#" target="_blank"><button type="submit" class="btn btn-primary float-right mx-2">See Table</button></a>
+                    <button type="button" class="btn btn-primary float-right mx-2" data-toggle="modal" data-target="#myModal">See Insights</button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle float-left mx-2" viewBox="0 0 16 16" id="back-btn">
+                      <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                    </svg>
                   </h6>
                 </div>
                 <div class="card-body canvas_div_pdf" id="canvas_div_pdf">
-                  <code class="col-2">Node :</code><a id="node_name"></a>
-                  <p> </p>
-                  <code class="col-2">Date :</code> <a id="node_date"></a>
-                  <p> </p>
-                  <code class="col-2">Time :</code> <a id="node_time"></a>
-                  <p> </p>
+                  <code class="col-2 mx-2 my-2">Node :</code><a id="node_name"></a>
+                  
+                  <code class="col-2 mx-2 my-2">Date :</code> <a id="node_date"></a>
+                  
+                  <code class="col-2 mx-2 my-2">Time :</code> <a id="node_time"></a>
+                  
                   <div class="row">
                     <table class="table">
                       <thead>
@@ -394,12 +535,9 @@
                           <th scope="col">current</th>
                           <th scope="col">power</th>
                           <th scope="col">voltage</th>
-                          <th scope="col">Energy </th>
-                          <th scope="col">Power Factor</th>
-                          <th scope="col">Frequency</th>
-                          <th scope="col">WindSpeed</th>
-                          <th scope="col">Shaft Speed (RPM)</th>
-                          <th scope="col">Torque</th>
+                          <th scope="col">generator speed </th>
+                          <th scope="col">WindSpeed </th>
+
                         </tr>
                       </thead>
                       <tbody>
@@ -408,12 +546,10 @@
                           <td id="sd_current"></td>
                           <td id="sd_power"></td>
                           <td id="sd_voltage"></td>
-                          <td id="sd_energy"></td>
-                          <td id="sd_power_factor"></td>
-                          <td id="sd_frequency"></td>
+                          <td id="sd_generator_speed"></td>
+
                           <td id="sd_windspeed"></td>
-                          <td id="sd_shaft_speed"></td>
-                          <td id="sd_torque"></td>
+
 
                         </tr>
                         <tr>
@@ -421,24 +557,20 @@
                           <td id="vari_current"></td>
                           <td id="vari_power"></td>
                           <td id="vari_voltage"></td>
-                          <td id="vari_energy"></td>
-                          <td id="vari_power_factor"></td>
-                          <td id="vari_frequency"></td>
+                          <td id="vari_generator_speed"></td>
+
                           <td id="vari_windspeed"></td>
-                          <td id="vari_shaft_speed"></td>
-                          <td id="vari_torque"></td>
+
                         </tr>
                         <tr>
                           <th scope="row">mean</th>
                           <td id="mean_current"></td>
                           <td id="mean_power"></td>
                           <td id="mean_voltage"></td>
-                          <td id="mean_energy"></td>
-                          <td id="mean_power_factor"></td>
-                          <td id="mean_frequency"></td>
+                          <td id="mean_generator_speed"></td>
+
                           <td id="mean_windspeed"></td>
-                          <td id="mean_shaft_speed"></td>
-                          <td id="mean_torque"></td>
+
                         </tr>
                       </tbody>
                     </table>
@@ -448,20 +580,22 @@
                     <canvas id="myAreaChart"></canvas>
                   </div>
                   <hr>
-                  <div class="row mx-4 my-3">
+                  {% comment %} <div class="row mx-4 my-3">
                     <div class="" style="color:#d45087">●</div>
                     <p> current</p>
-                    <div class="" style="color:rgba(78, 115, 223, 1)">●</div>
-                    <p> power</p>
-                    <div class="" style="color:yellow">●</div>
+                    <div class="" style="color:#e9c7eb">●</div>
+                    <p> Power</p>
+                    <div class="" style="color:#000000">●</div>
                     <p> voltage</p>
-                    <div class="" style="color:purple">●</div>
-                    <p> lpm</p>
-                  </div>
+                    <div class="" style="color:#a60ff2">●</div>
+                    <p> generator_speed</p>
+                    <div class="" style="color:#0febf2">●</div>
+                    <p> windspeed</p>
+                  </div> {% endcomment %}
                 </div>
               </div>
 
-              <div class="card shadow mb-4 class-2 d-none">
+              {% comment %} <div class="card shadow mb-4 class-2 d-none">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">Insights</h6>
                 </div>
@@ -474,11 +608,13 @@
                   <div id="node_date"></div>
                   </p>
                 </div>
-              </div>
+              </div> {% endcomment %}
             </div>
           </div>
         </div>
 
+        {% for group in user.groups.all %}
+        {% if group.name == 'administrator' or group.name == 'admin'%}
         <div class="card shadow mb-4 class-3 mx-3 d-none">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">User Management</h6>
@@ -513,8 +649,12 @@
                           Roles
                         </button>
                         <div class="mask dropdown-menu">
-                          <a class="mask dropdown-item super_admin" id="{{i.id}}">super admin</a>
+                          {% for group in user.groups.all %}
+                          {% if group.name == 'administrator'%}
+                          <a class="mask dropdown-item super_admin" id="{{i.id}}">administrator</a>
                           <a class="mask dropdown-item admin" id="{{i.id}}">admin</a>
+                          {% endif %}
+                          {% endfor %}
                           <a class="mask dropdown-item observer" id="{{i.id}}">observer</a>
                           <a class="mask dropdown-item user" id="{{i.id}}">user</a>
                         </div>
@@ -528,6 +668,66 @@
             </div>
           </div>
         </div>
+        {% endif %}
+        {% endfor %}
+
+        <div class="card shadow mb-4 class-4 mx-3 d-none">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Backup</h6>
+          </div>
+          {% comment %} <div class="card-header py-3">
+            <button type="button" class="btn btn-primary" id="add_user">Add User</button>
+          </div> {% endcomment %}
+          <div class="card-body class-4 d-none">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%">
+                <thead>
+                  <tr>
+                    <th>Paramater Name</th>
+                    <th>Save Backup</th>
+                    <th>Upload Backup</th>
+                  </tr>
+                </thead>
+
+                <tbody id="">
+                  <tr class="">
+                    <td>Voltage</td>
+                    <td><a href="/admin/node/voltage_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                    <td><a href="/admin/node/voltage_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                  </tr>
+                  <tr class="">
+                    <td>Current</td>
+                    <td><a href="/admin/node/current_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                    <td><a href="/admin/node/current_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                  </tr><tr class="">
+                    <td>Generator Speed</td>
+                    <td><a href="/admin/node/generator_speed_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                    <td><a href="/admin/node/generator_speed_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                  </tr>
+                  <tr class="">
+                    <td>Power</td>
+                    <td><a href="/admin/node/power_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                    <td><a href="/admin/node/power_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                  </tr><tr class="">
+                    <td>WindSpeed</td>
+                    <td><a href="/admin/node/windspeed_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                    <td><a href="/admin/node/windspeed_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                  </tr>
+                </tr><tr class="">
+                  <td>Nodes</td>
+                  <td><a href="/admin/node/nodes_model/export/" target="_blank"><button type="button" class="btn btn-success">Download</button></td></a>
+                  <td><a href="/admin/node/nodes_model/import/" target="_blank"><button type="button" class="btn btn-info">Upload</button></td></a>
+                </tr>
+                </tbody>
+
+              </table>
+            </div>
+            <div class="alert alert-primary" role="alert">
+              Note : Download backup for each paramater everyday.
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <!-- End of Content Wrapper -->
@@ -575,103 +775,241 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+          {% csrf_token %}
+          <div class="modal-body" id="my-checkbox-group">
+            <div class="form-group">
+              <label for="UID">UID</label>
+              <input type="text" class="form-control" id="UID" name="uuid" placeholder="UID" />
+            </div>
+            <div class="form-group">
+              <label for="location">location</label>
+              <input type="text" class="form-control" id="location" name="location" placeholder="location" />
+            </div>
+            <div class="form-group">
+              <label for="sub_location">sub_location</label>
+              <input type="text" class="form-control" id="sub_location" name="sub_location"
+                placeholder="sub_location" />
+            </div>
+            <div class="form-group">
+              <label for="machine">machine</label>
+              <input type="text" class="form-control" id="machine" name="machine" placeholder="machine" />
+            </div>
+            <div class="form-group">
+              <label for="email">email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="email" />
+            </div>
+
+            <div class="custom-control custom-checkbox" id="">
+              <input type="checkbox" class="custom-control-input" id="current-cb">
+              <label class="custom-control-label" for="current-cb">current</label>
+            </div>
+
+            <div class="row mt-4 current-box d-none">
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="current low" name="current_low"
+                  id="current_low">
+              </div>
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="current high" name="current_high"
+                  id="current_high">
+              </div>
+            </div>
+
+            <div class="custom-control custom-checkbox my-2" id="">
+              <input type="checkbox" class="custom-control-input" id="voltage-cb">
+              <label class="custom-control-label" for="voltage-cb">voltage</label>
+            </div>
+
+            <div class="row mt-4 voltage-box d-none">
+              <div class="col">
+                <input type="text" value="undefined" name="voltage_low" class="form-control" placeholder="voltage_low"
+                  name="voltage_low" id="voltage_low">
+              </div>
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="voltage_high" name="voltage_high"
+                  id="voltage_high">
+              </div>
+            </div>
+
+            <div class="custom-control custom-checkbox my-2" id="">
+              <input type="checkbox" class="custom-control-input" id="generator_speed-cb">
+              <label class="custom-control-label" for="generator_speed-cb">generator speed low</label>
+            </div>
+
+            <div class="row mt-4 d-none generator_speed-box ">
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="generator_speed_low"
+                  name="generator_speed_low" id="generator_speed_low">
+              </div>
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="generator_speed_high"
+                  name="generator_speed_high" id="generator_speed_high">
+              </div>
+            </div>
+
+            <div class="custom-control custom-checkbox my-2" id="">
+              <input type="checkbox" class="custom-control-input" name="" id="windspeed-cb">
+              <label class="custom-control-label" for="windspeed-cb">windspeed</label>
+            </div>
+
+            <div class="row mt-4 d-none windspeed-box">
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="windspeed_low"
+                  name="windspeed_low" id="windspeed_low">
+              </div>
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="windspeed_high"
+                  name="windspeed_high" id="windspeed_high">
+              </div>
+            </div>
+
+            <div class="custom-control custom-checkbox my-2" id="">
+              <input type="checkbox" class="custom-control-input" id="power-cb">
+              <label class="custom-control-label" for="power-cb">Power</label>
+            </div>
+
+            <div class="row mt-4 d-none power-box">
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="Power low" id="power_low"
+                  name="power_low">
+              </div>
+              <div class="col">
+                <input type="text" value="undefined" class="form-control" placeholder="Power high" id="power_high"
+                  name="power_high">
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_node">
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="add_node">
+              Add Node
+            </button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!--  edit user node -->
+
+  <div class="modal fade" id="edit-node-modal" tabindex="-1" role="dialog" aria-labelledby="edit-node-modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="edit-node-modal">Edit Node</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="">
           <div class="form-group">
             <label for="UID">UID</label>
-            <input type="text" class="form-control" id="UID" placeholder="UID" />
+            <input type="text" class="form-control" id="edit-node-modal-UID" name="uuid" value="" placeholder="UID" disabled/>
           </div>
           <div class="form-group">
             <label for="location">location</label>
-            <input type="text" class="form-control" id="location" placeholder="location" />
+            <input type="text" class="form-control" id="edit-node-modal-location" name="location" value="" placeholder="location" />
           </div>
           <div class="form-group">
             <label for="sub_location">sub_location</label>
-            <input type="text" class="form-control" id="sub_location" placeholder="sub_location" />
+            <input type="text" class="form-control" id="edit-node-modal-sub_location" name="sub_location" value=""
+              placeholder="sub_location" />
           </div>
           <div class="form-group">
             <label for="machine">machine</label>
-            <input type="text" class="form-control" id="machine" placeholder="machine" />
+            <input type="text" class="form-control" id="edit-node-modal-machine" name="machine" placeholder="machine" value=""/>
           </div>
           <div class="form-group">
             <label for="email">email</label>
-            <input type="email" class="form-control" id="email" placeholder="email" />
+            <input type="email" class="form-control" id="edit-node-modal-email" name="email" placeholder="email" value=""/>
           </div>
-          <div class="row">
-            <div class="col">
-              <input type="text" class="form-control" placeholder="power low" id="power_low">
-            </div>
-            <div class="col">
-              <input type="text" class="form-control" placeholder="power high" id="power_high">
-            </div>
+
+          <div class="alert alert-success" role="alert">
+            Select the paramaters you want to edit. Unchecked paramaters will be removed .
           </div>
-          <div class="row mt-4">
-            <div class="col">
-              <input type="text" class="form-control" placeholder="current low" id="current_low">
-            </div>
-            <div class="col">
-              <input type="text" class="form-control" placeholder="current high" id="current_high">
-            </div>
+
+          <div class="custom-control custom-checkbox" id="">
+            <input type="checkbox" class="custom-control-input" id="current-cb-edit">
+            <label class="custom-control-label" for="current-cb-edit">current</label>
           </div>
-          <div class="row mt-4">
+
+          <div class="row mt-4 current-box-edit d-none">
             <div class="col">
-              <input type="text" class="form-control" placeholder="voltage_low" id="voltage_low">
+              <input type="text" class="form-control" placeholder="current low" name="current_low" data-currentlow= "absent"
+                id="edit-node-modal-current_low" value="undefined">
             </div>
             <div class="col">
-              <input type="text" class="form-control" placeholder="voltage_high" id="voltage_high">
+              <input type="text" value="undefined" class="form-control" placeholder="current high" name="current_high" data-currenthigh= "absent"
+                id="edit-node-modal-current_high" >
             </div>
           </div>
 
-          <div class="row mt-4">
+          <div class="custom-control custom-checkbox my-2" id="">
+            <input type="checkbox" class="custom-control-input" id="voltage-cb-edit">
+            <label class="custom-control-label" for="voltage-cb-edit">voltage</label>
+          </div>
+
+          <div class="row mt-4 voltage-box-edit d-none">
             <div class="col">
-              <input type="text" class="form-control" placeholder="energy_high" id="energy_high">
+              <input type="number" step="any" value="undefined" name="voltage_low" class="form-control" placeholder="voltage_low" data-voltagelow= "absent"
+                name="voltage_low" id="edit-node-modal-voltage_low">
             </div>
             <div class="col">
-              <input type="text" class="form-control" placeholder="energy_low" id="energy_low">
+              <input type="number" step="any" value="undefined" class="form-control" placeholder="voltage_high" name="voltage_high" data-voltagehigh= "absent"
+                id="edit-node-modal-voltage_high">
             </div>
           </div>
 
-          <div class="row mt-4">
+          <div class="custom-control custom-checkbox my-2" id="">
+            <input type="checkbox" class="custom-control-input" id="generator_speed-cb-edit" >
+            <label class="custom-control-label" for="generator_speed-cb-edit">generator speed</label>
+          </div>
+
+          <div class="row mt-4 d-none generator_speed-box-edit ">
             <div class="col">
-              <input type="text" class="form-control" placeholder="power_factor_high" id="power_factor_high">
+              <input type="text" value="undefined" class="form-control" placeholder="generator_speed_low" data-generatorspeedlow= "absent"
+                name="generator_speed_low" id="edit-node-modal-generator_speed_low">
             </div>
             <div class="col">
-              <input type="text" class="form-control" placeholder="power_factor_low" id="power_factor_low">
+              <input type="text" value="undefined" class="form-control" placeholder="generator_speed_high"  data-generatorspeedhigh= "absent"
+                name="generator_speed_high" id="edit-node-modal-generator_speed_high">
             </div>
           </div>
 
-          <div class="row mt-4">
+          <div class="custom-control custom-checkbox my-2" id="">
+            <input type="checkbox" class="custom-control-input" name="" id="windspeed-cb-edit">
+            <label class="custom-control-label" for="windspeed-cb-edit">windspeed</label>
+          </div>
+
+          <div class="row mt-4 d-none windspeed-box-edit">
             <div class="col">
-              <input type="text" class="form-control" placeholder="frequency_high" id="frequency_high">
+              <input type="text" value="undefined" class="form-control" placeholder="windspeed_low" data-windspeedlow= "absent"
+                name="windspeed_low" id="edit-node-modal-windspeed_low">
             </div>
             <div class="col">
-              <input type="text" class="form-control" placeholder="frequency_low" id="frequency_low">
+              <input type="text" value="undefined" class="form-control" placeholder="windspeed_high" data-windspeedhigh= "absent"
+                name="windspeed_high" id="edit-node-modal-windspeed_high">
             </div>
           </div>
 
-          <div class="row mt-4">
-            <div class="col">
-              <input type="text" class="form-control" placeholder="windspeed_high" id="windspeed_high">
-            </div>
-            <div class="col">
-              <input type="text" class="form-control" placeholder="windspeed_low" id="windspeed_low">
-            </div>
+          <div class="custom-control custom-checkbox my-2" id="">
+            <input type="checkbox" class="custom-control-input" id="power-cb-edit">
+            <label class="custom-control-label" for="power-cb-edit">Power</label>
           </div>
 
-          <div class="row mt-4">
+          <div class="row mt-4 d-none power-box-edit">
             <div class="col">
-              <input type="text" class="form-control" placeholder="shaft_speed_high" id="shaft_speed_high">
+              <input type="text" value="undefined" class="form-control" placeholder="Power low" id="edit-node-modal-power_low" data-powerlow= "absent"
+                name="power_low">
             </div>
             <div class="col">
-              <input type="text" class="form-control" placeholder="shaft_speed_low" id="shaft_speed_low">
-            </div>
-          </div>
-
-          <div class="row mt-4">
-            <div class="col">
-              <input type="text" class="form-control" placeholder="torque_high" id="torque_high">
-            </div>
-            <div class="col">
-              <input type="text" class="form-control" placeholder="torque_low" id="torque_low">
+              <input type="text" value="undefined" class="form-control" placeholder="Power high" id="edit-node-modal-power_high" data-powerhigh= "absent"
+                name="power_high">
             </div>
           </div>
 
@@ -680,14 +1018,15 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_node">
             Close
           </button>
-          <button type="button" class="btn btn-primary" id="add_node">
-            Add Node
+          <button type="button" class="btn btn-primary save-btn" id="">
+            Save
           </button>
         </div>
       </div>
     </div>
   </div>
 
+  <!--  edit user node end -->
 
   <!-- Modal -->
   <div class="modal fade" id="changes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -709,6 +1048,42 @@
       </div>
     </div>
   </div>
+
+  {% for group in user.groups.all %}
+  {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
+  <div class="modal fade" id="user-list-noti-modal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel-deleted-node" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel-deleted-node">Select new user for node xyz</h5>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <form class="col-md-10 mb-5">
+                {% comment %} <label>Select</label> {% endcomment %}
+                <select class="form-control" id="user-list-dropdown">
+                  {% for user in users %}
+                  <option class="user-fn-ln" id="{{user.username}}">{{user.username}}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <button type="button" class="col-5 btn btn-primary mx-2 save-user-node" data-dismiss="modal"
+              id="">Save</button>
+            <button type="button" class="col-5 btn btn-secondary " data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
 
 
 
@@ -794,6 +1169,27 @@
     </div>
   </div>
 
+  <div class="modal fade" id="stats_error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Error</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          The Selected range does not have sufficient data to perform mathematical operations. Please see "Print Table"
+          option to verify.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <div class="modal fade" id="password_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -827,12 +1223,50 @@
             </form> {% endcomment %}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" id="pass-btn" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <!-- Close Button -->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Your div content goes here -->
+          <div id="yourDiv" style="width: 100%; height: 100%; background-color: transparent;">
+            <!-- Content of your div -->
+
+            <div class="card shadow mb-4 class-2 d-none">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Insights</h6>
+              </div>
+              <div class="card-body">
+                <p>Your Node Went Faulty for <a id="insights_week">____</a> Time(s) In This Week</p>
+                <hr>
+                <p>Your Node Went Faulty for <a id="insights_month">____</a> Time(s) In Last 30 Days</p>
+                <hr>
+                <p>Your Node Went Faulty for <a id="insights_time">____</a> Time(s) between
+                <div id="node_date"></div>
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
   <div class="modal fade" id="user_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -863,17 +1297,21 @@
             <input type="text" class="form-control" id="user_pass" placeholder="" />
           </div>
           <div class="form-group">
-            <label for="location">Select User’s Role</label>
+            <label for="location">Select User’s Role :</label>
           </div>
           <div class="form-group">
+            {% for group in user.groups.all %}
+            {% if group.name == 'administrator'%}
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="roles" id="inlineRadio1" value="super admins">
-              <label class="form-check-label" for="inlineRadio1">Super Admin</label>
+              <input class="form-check-input" type="radio" name="roles" id="inlineRadio1" value="administrator">
+              <label class="form-check-label" for="inlineRadio1">administrator</label>
             </div>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="roles" id="inlineRadio2" value="admin">
               <label class="form-check-label" for="inlineRadio2">Admin</label>
             </div>
+            {% endif %}
+            {% endfor %}
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="roles" id="inlineRadio3" value="observer">
               <label class="form-check-label" for="inlineRadio3">observer</label>
@@ -895,8 +1333,6 @@
       </div>
     </div>
   </div>
-
-
 
 
 

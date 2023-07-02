@@ -1,1172 +1,1031 @@
 <script>
   $(document).ready(function () {
-    jQuery.noConflict(); 
-    $('#password_modal').modal('show'); 
-      var y;
-  
-      function create_token(){     
-        
-        var payload = {
-          "username":"{{request.user.username}}",
-          "password": $("#password").val()
-                };
-  
-        $.ajax({
-          url: "/api/token/",
-          async: false,
-          type: "POST",
-          data: JSON.stringify(payload),
-          cache: false,
-          processData: false,
-          contentType: "application/json",
-          success: function (data) {
-              // store tokens in localStorage
-              //x=window.localStorage.setItem('refreshToken', data['refresh']);
-              window.localStorage.setItem('accessToken', data['access']);
-              y = data['access']
-              //console.log(y);
-          },
-          error: function (rs, e) {
-              console.error(rs.status);
-              console.error(rs.responseText);
-          }
-      });
+    jQuery.noConflict();
+    $('#password_modal').modal('show');
+    //=================================================
+
+   
+    
+  //==================================================
+  var y;
+  function create_token() {
+
+    var payload = {
+      "username": "{{request.user.username}}",
+      "password": $('#password').val()
     };
-      
+
+    $.ajax({
+      url: "/api/token/",
+      async: false,
+      type: "POST",
+      data: JSON.stringify(payload),
+      cache: false,
+      processData: false,
+      contentType: "application/json",
+      success: function (data) {
+        // store tokens in localStorage
+        //x=window.localStorage.setItem('refreshToken', data['refresh']);
+        window.localStorage.setItem('accessToken', data['access']);
+        y = data['access']
+        //console.log(y);
+      },
+      error: function (rs, e) {
+        console.error(rs.status);
+        console.error(rs.responseText);
+      }
+    });
+  };
+
+  //create_token();
+  //console.log("out",y);
+
+
+  Date.prototype.today = function () {
+    return ((this.getDate() < 10) ? "0" : "") + this.getDate() + "/" + (((this.getMonth() + 1) < 10) ? "0" : "") + (this.getMonth() + 1) + "/" + this.getFullYear();
+  };
+
+  // For the time now
+  Date.prototype.timeNow = function () {
+    return ((this.getHours() < 10) ? "0" : "") + this.getHours() + ":" + ((this.getMinutes() < 10) ? "0" : "") + this.getMinutes() + ":" + ((this.getSeconds() < 10) ? "0" : "") + this.getSeconds();
+  };
+
+  //var datetime = new Date().today() + " @ " + new Date().timeNow();
+
+  //$('.time').text(datetime);
+
+
+  function checkAllValuesNone(payload) {
+    for (const key in payload) {
+      if (payload[key] !== "") {
+        return false; // Value is not "none"
+      }
+    }
+    return true; // All values are "none"
+  };
+
+
+  $("body").on("click", ".lala", function (e) {
+    e.preventDefault();
+    create_token();
+    var pk = this.id;
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+    $.ajax({
+      url: "delete_data_nodes/" + pk + "/",
+      data: {},
+      headers: headers_payload,
+      type: "POST",
+      contentType: "application/json",
+      success: function (result) {
+        document.getElementById("delete_node" + String(pk)).remove();
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+  });
+
+  $("#node2").hide();
+  $("#node1").click(function () {
+    jQuery.noConflict();
+    $('#exampleModal').modal('show');
+
+  });
+
+  $("#add_user").click(function () {
+    jQuery.noConflict();
+    $('#user_modal').modal('show');
+  });
+
+
+  //=============================================================   
+  $('#current-cb').change(function () {
+    if ($(this).is(':checked')) {
+      $(".current-box").removeClass("d-none");
+      $("#current_low").val("0");
+      $("#current_high").val("100");
+    } else {
+      $(".current-box").addClass("d-none");
+      $("#current_low").val("undefined");
+      $("#current_high").val("undefined");
+    }
+  });
+
+  $('#voltage-cb').change(function () {
+    if ($(this).is(':checked')) {
+      $(".voltage-box").removeClass("d-none");
+      $("#voltage_low").val("0");
+      $("#voltage_high").val("100");
+    } else {
+      $(".voltage-box").addClass("d-none");
+      $("#voltage_low").val("undefined");
+      $("#voltage_high").val("undefined");
+    }
+  });
+
+  $('#generator_speed-cb').change(function () {
+    if ($(this).is(':checked')) {
+      $(".generator_speed-box").removeClass("d-none");
+      $("#generator_speed_low").val("0");
+      $("#generator_speed_high").val("100");
+    } else {
+      $(".generator_speed-box").addClass("d-none");
+      $("#generator_speed_low").val("undefined");
+      $("#generator_speed_high").val("undefined");
+    }
+  });
+
+  $('#windspeed-cb').change(function () {
+    if ($(this).is(':checked')) {
+      $(".windspeed-box").removeClass("d-none");
+      $("#windspeed_low").val("0");
+      $("#windspeed_high").val("100");
+    } else {
+      $(".windspeed-box").addClass("d-none");
+      $("#windspeed_low").val("undefined");
+      $("#windspeed_high").val("undefined");
+    }
+  });
+
+  $('#power-cb').change(function () {
+    if ($(this).is(':checked')) {
+      $(".power-box").removeClass("d-none");
+      $("#power_low").val("0");
+      $("#power_high").val("100");
+    } else {
+      $(".power-box").addClass("d-none");
+      $("#power_low").val("undefined");
+      $("#power_high").val("undefined");
+    }
+  });
+  //=============================================================   
+
+
+  $('#current-cb-edit').change(function () {
+    console.log("done");
+    if ($(this).is(':checked')) {
+      $(".current-box-edit").removeClass("d-none");
+      $("#edit-node-modal-current_low").attr('data-currentlow', 'present');
+      $("#edit-node-modal-current_high").attr('data-currenthigh', 'present');
+    } else {
+      $(".current-box-edit").addClass("d-none");
+      $("#edit-node-modal-current_low").attr('data-currentlow', 'absent');
+      $("#edit-node-modal-current_high").attr('data-currenthigh', 'absent');
+    }
+  });
+
+  $('#voltage-cb-edit').change(function () {
+    if ($(this).is(':checked')) {
+      $(".voltage-box-edit").removeClass("d-none");
+      $("#edit-node-modal-voltage_low").attr('data-voltagelow', 'present');
+      $("#edit-node-modal-voltage_high").attr('data-voltagehigh', 'present');
+    } else {
+      $(".voltage-box-edit").addClass("d-none");
+      $("#edit-node-modal-voltage_low").attr('data-voltagelow', 'absent');
+      $("#edit-node-modal-voltage_high").attr('data-voltagehigh', 'absent');
+    }
+  });
+
+  $('#generator_speed-cb-edit').change(function () {
+    if ($(this).is(':checked')) {
+      $(".generator_speed-box-edit").removeClass("d-none");
+      $("#edit-node-modal-generator_speed_low").attr('data-generatorspeedlow', 'present');
+      $("#edit-node-modal-generator_speed_high").attr('data-generatorspeedhigh', 'present');
+    } else {
+      $(".generator_speed-box-edit").addClass("d-none");
+      $("#edit-node-modal-generator_speed_low").attr('data-generatorspeedlow', 'absent');
+      $("#edit-node-modal-generator_speed_high").attr('data-generatorspeedhigh', 'absent');
+    }
+  });
+
+  $('#windspeed-cb-edit').change(function () {
+    if ($(this).is(':checked')) {
+      $(".windspeed-box-edit").removeClass("d-none");
+      $("#edit-node-modal-windspeed_low").attr('data-windspeedlow', 'present');
+      $("#edit-node-modal-windspeed_high").attr('data-windspeedhigh', 'present');
+    } else {
+      $(".windspeed-box-edit").addClass("d-none");
+      $("#edit-node-modal-windspeed_low").attr('data-windspeedlow', 'absent');
+      $("#edit-node-modal-windspeed_high").attr('data-windspeedhigh', 'absent');
+    }
+  });
+
+  $('#power-cb-edit').change(function () {
+    if ($(this).is(':checked')) {
+      $(".power-box-edit").removeClass("d-none");
+      $("#edit-node-modal-power_low").attr('data-powerlow', 'present');
+      $("#edit-node-modal-power_high").attr('data-powerhigh', 'present');
+    } else {
+      $(".power-box-edit").addClass("d-none");
+      $("#edit-node-modal-power_low").attr('data-powerlow', 'absent');
+      $("#edit-node-modal-power_high").attr('data-powerhigh', 'absent');
+    }
+  });
+
+
+
+  $("#add_node").click(function () {
+
+    create_token();
+    var payload_add = {
+      machine: $("#machine").val(),
+      location: $("#location").val(),
+      sub_location: $("#sub_location").val(),
+      uuid: $("#UID").val(),
+      user_name: "{{ user.username }}",
+      user_id: "{{ user.id }}",
+      csrfmiddlewaretoken: "{{ csrf_token }}",
+      email: $("#email").val(),
+
+      current_low: $("#current_low").val(),
+      current_high: $("#current_high").val(),
+
+      power_low: $("#power_low").val(),
+      power_high: $("#power_high").val(),
+
+      voltage_high: $("#voltage_high").val(),
+      voltage_low: $("#voltage_low").val(),
+
+      generator_speed_high: $("#generator_speed_high").val(),
+      generator_speed_low: $("#generator_speed_low").val(),
+
+      power_high: $("#power_high").val(),
+      power_low: $("#power_low").val(),
+
+      windspeed_high: $("#windspeed_high").val(),
+      windspeed_low: $("#windspeed_low").val(),
+    };
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    //console.log(payload_add)
+
+    //$('#my-checkbox-group').change(function () {
+    if ($('.custom-control-input:checked').length > 0 && $("#machine").val() != "" && $("#location").val() != "" && $("#sub_location").val() != "" && $("#UID").val() != "" && $("#email").val() != "") {
+      console.log('At least one checkbox is checked.');
+      $.ajax({
+        url: "/post_data_nodes",
+        headers: headers_payload,
+        type: "POST",
+        data: JSON.stringify(payload_add),
+        success: function (data, textStatus, jqXHR) {
+          location.reload(true);
+          // window.location.href = window.location.href;
+          // location = location;
+          // window.location.replace("http://127.0.0.1:8000/admin_panel");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+        },
+      });
+
+    } else {
+      // No checkboxes are checked
+      alert('Please Fill Complete Information.');
+    }
+    //});
+
+
+  });
+
+
+  $("body").on("click", ".edit", function () {
+    pk = (this.id);
+    $.ajax({
+      url: "/get_single_node/" + pk,
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (data, textStatus, jqXHR) {
+
+        var data = JSON.parse(data);
+        console.log(data);
+        //console.log(data.voltage_high);
+
+        $('#edit-node-modal-UID').val(data.uuid);
+        $('#edit-node-modal-location').val(data.location);
+        $('#edit-node-modal-sub_location').val(data.sub_location);
+        $('#edit-node-modal-machine').val(data.machine);
+        $('#edit-node-modal-email').val(data.email);
+        $('#edit-node-modal-current_low').val(data.current_low);
+        $('#edit-node-modal-current_high').val(data.current_high);
+        $('#edit-node-modal-voltage_low').val(data.voltage_low);
+        $('#edit-node-modal-voltage_high').val(data.voltage_high);
+        $('#edit-node-modal-generator_speed_low').val(data.generator_speed_low);
+        $('#edit-node-modal-generator_speed_high').val(data.generator_speed_high);
+        $('#edit-node-modal-windspeed_low').val(data.windspeed_low);
+        $('#edit-node-modal-windspeed_high').val(data.windspeed_high);
+        $('#edit-node-modal-power_low').val(data.power_low);
+        $('#edit-node-modal-power_high').val(data.power_high);
+        $('.save-btn').attr("id", data.id);
+
+        //$("#voltage-cb-edit").prop('checked', true);
+        jQuery.noConflict();
+        $('#edit-node-modal').modal('show')
+
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown)
+      }
+    })
+  });
+
+
+
+
+  $("body").on("click", ".save-btn", function () {
+    create_token();
+    pk = this.id
+
+    var payload = {
+
+      uuid: $('#edit-node-modal-UID').val(),
+      location: $('#edit-node-modal-location').val(),
+      sub_location: $('#edit-node-modal-sub_location').val(),
+      machine: $('#edit-node-modal-machine').val(),
+      email: $('#edit-node-modal-email').val(),
+      current_low: $('#edit-node-modal-current_low').val(),
+      current_high: $('#edit-node-modal-current_high').val(),
+      voltage_low: $('#edit-node-modal-voltage_low').val(),
+      voltage_high: $('#edit-node-modal-voltage_high').val(),
+      generator_speed_low: $('#edit-node-modal-generator_speed_low').val(),
+      generator_speed_high: $('#edit-node-modal-generator_speed_high').val(),
+      windspeed_low: $('#edit-node-modal-windspeed_low').val(),
+      windspeed_high: $('#edit-node-modal-windspeed_high').val(),
+      power_low: $('#edit-node-modal-power_low').val(),
+      power_high: $('#edit-node-modal-power_high').val(),
+
+
+      current_low_value: $("#edit-node-modal-current_low").attr('data-currentlow'),
+      current_high_value: $("#edit-node-modal-current_high").attr('data-currenthigh'),
+      voltage_low_value: $("#edit-node-modal-voltage_low").attr('data-voltagelow'),
+      voltage_high_value: $("#edit-node-modal-voltage_high").attr('data-voltagehigh'),
+      generator_speed_low_value: $("#edit-node-modal-generator_speed_low").attr('data-generatorspeedlow'),
+      generator_speed_high_value: $("#edit-node-modal-generator_speed_high").attr('data-generatorspeedhigh'),
+      windspeed_low_value: $("#edit-node-modal-windspeed_low").attr('data-windspeedlow'),
+      windspeed_high_value: $("#edit-node-modal-windspeed_high").attr('data-windspeedhigh'),
+      power_low_value: $("#edit-node-modal-power_low").attr('data-powerlow'),
+      power_high_value: $("#edit-node-modal-power_high").attr('data-powerhigh')
+
+    };
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    $.ajax({
+      url: "/update_single_node/" + pk + "/",
+      type: "PUT",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        jQuery.noConflict();
+        $('#edit-node-modal').modal('hide');
+        $('#changes').modal('show');
+        location.reload(true);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+
+  $("body").on("click", ".noti-center", function (e) {
+    e.preventDefault()
+    var ids = this.id
+    uuid = $(this).attr('data-node-name');
+    $('.save-user-node').attr('id', ids);
+    $('#exampleModalLabel-deleted-node').text('Select new user for node ' + uuid + ids);
+    $('#user-list-noti-modal').modal('show');
+  });
+
+
+  $("body").on("click", ".save-user-node", function (e) {
+    e.preventDefault()
+    create_token();
+
+    var ids = this.id;
+
+    payload_add = {
+      "node_id": String(ids),
+      "user_name": $('#user-list-dropdown :selected').text()
+    }
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    $.ajax({
+      url: "/manage_deleted_nodes/",
+      data: JSON.stringify(payload_add),
+      headers: headers_payload,
+      type: "POST",
+      contentType: "application/json",
+      success: function (data, textStatus, jqXHR) {
+        //alert("success"),
+        $('#notifications-counter').text(parseInt($('#notifications-counter').text()) - 1);
+
+        $('#notification-' + String(ids)).remove();
+        var lis = '<a class="dropdown-item bg-transparent" id=""> <div class="noti rounded border-dark border"> <div class="toast-header"> <strong class="mr-auto h4"> No Notifications </strong> </div> </div> </a>'
+        if ($('#notifications-counter').text() == String(0))
+        //alert(ids)
+        { $('#notification-list').append(lis); }
+
+
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    })
+  })
+
+  $("body").on("click", ".noti-delete", function (e) {
+    e.preventDefault();
+    create_token();
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    var ids = this.id;
+
+    payload = {
+      "node_id": String(ids)
+    };
+
+    $.ajax({
+      url: "/manage_deleted_nodes",
+      type: "DELETE",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        //alert("success")
+
+        $('#notifications-counter').text(parseInt($('#notifications-counter').text()) - 1);
+
+        $('#notification-' + String(ids)).remove();
+        var lis = '<a class="dropdown-item bg-transparent" id=""> <div class="noti rounded border-dark border"> <div class="toast-header"> <strong class="mr-auto h4"> No Notifications </strong> </div> </div> </a>'
+        if ($('#notifications-counter').text() == String(0))
+        //alert(ids)
+        { $('#notification-list').append(lis); }
+
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  })
+
+  function run_data_voltage() {
     //create_token();
-    //console.log("out",y);
-          
-      
-      Date.prototype.today = function () { 
-        return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear();
-    };
-    
-    // For the time now
-    Date.prototype.timeNow = function () {
-         return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
-    };
-  
-    //var datetime = new Date().today() + " @ " + new Date().timeNow();
-  
-    //$('.time').text(datetime);
-  
-  
-      $("body").on("click", ".lala", function (e) {
-        e.preventDefault();
-        create_token();
-        var pk = this.id;
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-        $.ajax({
-          url: "delete_data_nodes/" + pk + "/",
-          data: {},
-          headers: headers_payload,
-          type: "POST",
-          contentType: "application/json",
-          success: function (result) {
-          document.getElementById("delete_node"+String(pk)).remove();
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        });
-      });
-  
-      $("#node2").hide();
-      $("#node1").click(function () {
-        jQuery.noConflict(); 
-        $('#exampleModal').modal('show');
-  
-      });
-  
-      $("#add_user").click(function () {
-        jQuery.noConflict(); 
-        $('#user_modal').modal('show');
-      });
-  
-      
-  
-      $("#add_node").click(function () {
-        create_token();
-        var payload_add = {
-          machine: $("#machine").val(),
-          location: $("#location").val(),
-          sub_location: $("#sub_location").val(),
-          _uuid: $("#UID").val(),
-          _user_name: "{{ user.username }}",
-          user_id: "{{ user.id }}",
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-          current_low: $("#current_low").val(),
-          current_high: $("#current_high").val(),
-          power_low: $("#power_low").val(),
-          power_high: $("#power_high").val(),
-          voltage_high: $("#voltage_high").val(),
-          voltage_low: $("#voltage_low").val(),
-          email: $("#email").val(),
-
-          energy_high: $("#energy_high").val(),
-          energy_low: $("#energy_low").val(),
-
-          power_factor_high: $("#power_factor_high").val(),
-          power_factor_low: $("#power_factor_low").val(),
-
-          frequency_high: $("#frequency_high").val(),
-          frequency_low: $("#frequency_low").val(),
-
-          windspeed_high: $("#windspeed_high").val(),
-          windspeed_low: $("#windspeed_low").val(),
-
-          shaft_speed_high: $("#shaft_speed_high").val(),
-          shaft_speed_low: $("#shaft_speed_low").val(),
-
-          torque_high: $("#torque_high").val(),
-          torque_low: $("#torque_low").val(),
-
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/volatge_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#voltage-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["voltage"])
         };
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-        $.ajax({
-          url: "/post_data_nodes",
-          headers: headers_payload,
-          type: "POST",
-          data: JSON.stringify(payload_add),
-          success: function (data, textStatus, jqXHR) {
-            jQuery.noConflict(); 
-            $('#add_node_model').modal('show');
-            var x = ` <div class="position-relative card d-flex flex-column justify-content-between border-0 py-4 backgroundImage overflow-hidden m-3" id="delete_node${data.id}" style="width: 380px; border-radius: 20px 20px 20px 20px;">
-              <div class="d-flex flex-column mx-4 textColor pb-2 border-bottom border-secondary" style="z-index: 10;">
-                  <h4 class="font-weight-bold mb-1">UID : <a class="textColor UID${data.id}"> ${data.uuid} </a></h4>
-                  <h6 class="textColor" style="font-weight: 600;">Location: <a class="textColor location${data.id}"> ${data.location}</a></h6>
-              </div>
-  
-              <div class="flex-grow-1 d-flex flex-column textColor mx-4 px-2 py-3 my-3" style="z-index: 10;">
-                <div class="edit-class${data.id}">
-                  <div class="w-100 d-flex flex-column align-items-center justify-content-between">
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                          <p class="textColor font-weight-bold" style="font-size: 14px;">power</p>
-                          <h5 class="font-weight-bold textColor mb-1" id="power-${data.uuid}">${data.power}</h5>
-                      </div>
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                          <p class="textColor font-weight-bold" style="font-size: 14px;">current</p>
-                          <h5 class="font-weight-bold textColor mb-1" id="current-${data.uuid}">${data.current}</h5>
-                      </div>
+      }
+    });
+  };
+  setInterval(run_data_voltage, 5000);
+
+  function run_data_current() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/current_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#current-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["current"])
+        };
+      }
+    });
+  };
+  setInterval(run_data_current, 5000);
+
+
+  function run_data_power() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/power_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#power-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["power"])
+        };
+      }
+    });
+  };
+  setInterval(run_data_power, 5000);
+
+
+  function run_data_generator_speed() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/generator_speed_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#generator_speed-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["generator_speed"])
+        };
+      }
+    });
+  };
+  setInterval(run_data_generator_speed, 5000);
+
+
+  function run_data_windspeed() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/windspeed_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#windspeed-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["windspeed"])
+        };
+      }
+    });
+  };
+  setInterval(run_data_windspeed, 5000);
+
+
+
+  function run_data_battery() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/battery_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          console.log(result[i]["fields"]["uuid"]);
+          $("#battery-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["battery"])
+        };
+      }
+    });
+  };
+  setInterval(run_data_battery, 5000);
+
+
+  function run_health_data() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/node_health_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#faulty" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["health"])
+        };
+      }
+    });
+  };
+  setInterval(run_health_data, 5000);
+
+
+  function run_time_data() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/time_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        //console.log(result)  
+        for (let i = 0; i < result.length; i++) {
+          //console.log(result[i]["fields"]["uuid"]);
+          $("#time" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["date"] + " @ " + result[i]["fields"]["time"])
+        };
+      }
+    });
+  };
+  setInterval(run_time_data, 5000);
+
+
+  function run_notification_data() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/notification_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        $("#notification-list").empty();
+        $("#notifications-counter").text(result.length);
+        if (result.length > 0) {
+          for (let i = 0; i < result.length; i++) {
+            $("#notification-list").append(`
+              <a class="dropdown-item bg-transparent" id="notification-notification${result[i]["fields"]["node_id"]}">
+                <div class="noti rounded border-dark border">
+                  <div class="toast-header">
+                    <strong class="mr-auto h4"> ${result[i]["fields"]["uuid"]} node as been deleted</strong>
                   </div>
-                  <div class="d-flex flex-column align-items-center justify-content-between">
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                          <p class="textColor font-weight-bold" style="font-size: 14px;">voltage</p>
-                          <h5 class="font-weight-bold textColor mb-1" id="voltage-${data.uuid}">${data.voltage}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">energy</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="energy-${data.uuid}">${data.energy}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">Power Factor</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="power_factor-${data.uuid}">${data.power_factor}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">Frequency</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="frequency-${data.uuid}">${data.frequency}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">WindSpeed</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="windspeed-${data.uuid}">${data.windspeed}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">Shaft Speed (RPM)</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="shaft_speed-${data.uuid}">${data.shaft_speed}</h5>
-                      </div>
-
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">Torque</p>
-                        <h5 class="font-weight-bold textColor mb-1" id="torque-${data.uuid}">${data.torque}</h5>
-                      </div>
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                          <p class="textColor font-weight-bold" style="font-size: 14px;">Battery</p>
-                          <h5 class="font-weight-bold textColor mb-1" id="battery-${data.uuid}">${data.battery}</h5>
-                      </div>
-                      <div class="w-100 d-flex align-items-center justify-content-between ">
-                        <p class="textColor font-weight-bold" style="font-size: 14px;">Node Health : </p>
-                        <h5 class="font-weight-bold textColor mb-1"><a id="faulty${data.uuid}"></a></h5>
+                  <div class="toast-body">
+                    Please Take a action :
+                  </div>
+                    <div class="row toast-body">
+                      <button type="button" class="btn btn-primary col-4 mx-2 noti-center" id="${result[i]["fields"]["node_id"]}"
+                        data-node-name="${result[i]["fields"]["uuid"]}">Change User</button>
+                      <button type="button" class="btn btn-danger col-4 mx-1 noti-delete" id="${result[i]["fields"]["node_id"]}"
+                        data-node-name="${result[i]["fields"]["uuid"]}">Delete Node</button>
                     </div>
-                  </div>
                 </div>
-              </div>
-  
-              <div class="flex-grow-0 d-flex flex-column px-4 py-2 mx-4 border border-dark" style="border-radius: 12px;">
-                  <div class="mb-2 d-flex align-items-center justify-content-between">
-                      <span class="mr-2 text-white font-weight-bold">Machine :</span>
-                      <h6 class="font-weight-bold mb-0 text-white"><a class="textColor machine${data.id}"> ${data.machine} </a></h6>
-                  </div>
-                  <div class="mb-2 d-flex align-items-center justify-content-between">
-                      <span class="mr-2 text-white font-weight-bold">Last Updated:</span>
-                      <h6 class="font-weight-bold mb-0 text-white" id="time${data.uuid}"></h6>
-                  </div>
-                  <div class="mb-2 d-flex align-items-center justify-content-between">
-                      <span class="mr-2 text-white font-weight-bold">Sub Location:</span>
-                      <h6 class="font-weight-bold mb-0 text-white"><a class="textColor sub_location${data.id}"> ${data.sub_location}</a></h6>
-                  </div>
-                  
-                  <div class="mb-2 d-flex align-items-center justify-content-between">
-                      <span class="mr-2 text-white font-weight-bold">Username:</span>
-                      <h6 class="font-weight-bold mb-0 text-white">${data.user_name}</h6>
-                  </div>
-                  {% for group in user.groups.all %}
-                  {% if group.name == 'super admins' or group.name == 'admin' or group.name == 'user'%}
-                  <div class="w-100 d-flex align-items-center justify-content-between mt-2" style="border-radius: 8px;">
-                      <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold edit" id="${data.id}" style="border-radius: 8px; background-color: #fc5296;
-                      background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);">
-                          Edit
-                      </button>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between mt-2" style="border-radius: 8px;">
-                    <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold lala" id="${data.id}" style="border-radius: 8px; background-color: #fc5296;
-                    background-image: linear-gradient(315deg, #fc5296 0%, #f67062 74%);">
-                        Delete
-                    </button>
-                </div>
-                  <input type="hidden" id="current_low${data.id}" value="${data.current_low}" />
-                  <input type="hidden" id="current_high${data.id}" value="${data.current_high}" />
-                  <input type="hidden" id="power_low${data.id}" value="${data.power_low}" />
-                  <input type="hidden" id="power_high${data.id}" value="${data.power_high}" />
-                  <input type="hidden" id="voltage_low${data.id}" value="${data.voltage_low}" />
-                  <input type="hidden" id="voltage_high{${data.id} value="${data.voltage_high}" />
-                  <input type="hidden" id="lpm_low${data.id}" value="${data.lpm_low}" />
-                  <input type="hidden" id="lpm_high{${data.id} value="${data.lpm_high}" />
-
-                  <input type="hidden" id="energy_high${data.id}" value="${data.energy_high}" />
-                  <input type="hidden" id="energy_low{${data.id} value="${data.energy_low}" />
-                  <input type="hidden" id="power_factor_high${data.id}" value="${data.power_factor_high}" />
-                  <input type="hidden" id="power_factor_low{${data.id} value="${data.power_factor_low}" />
-                  <input type="hidden" id="frequency_high${data.id}" value="${data.frequency_high}" />
-                  <input type="hidden" id="frequency_low{${data.id} value="${data.frequency_low}" />
-                  <input type="hidden" id="windspeed_high${data.id}" value="${data.windspeed_high}" />
-                  <input type="hidden" id="windspeed_low{${data.id} value="${data.windspeed_low}" />
-                  <input type="hidden" id="shaft_speed_high${data.id}" value="${data.shaft_speed_high}" />
-                  <input type="hidden" id="shaft_speed_low{${data.id} value="${data.shaft_speed_low}" />
-                  <input type="hidden" id="torque_high${data.id}" value="${data.torque_high}" />
-                  <input type="hidden" id="torque_low{${data.id} value="${data.torque_low}" />
-                {% endif %}
-                {% endfor %}
-              </div>
-          </div> `;
-  
-            $("#appender").append(x);
-            $("#close_node").click();
-            clear_form_elements("modal-body");
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        });
-      });
-  
-      $("body").on("click", ".edit", function () {
-        pk = (this.id);
-        var payload = {
-          machine: $.trim($(".machine" + pk).text()),
-          location: $.trim($(".location" + pk).text()),
-          sub_location: $.trim($(".sub_location" + pk).text()),
-          uid: $.trim($(".UID" + pk).text()),
-          current_low: $("#current_low"+pk).val(),
-          current_high: $("#current_high"+pk).val(),
-          power_low: $("#power_low"+pk).val(),
-          power_high: $("#power_high"+pk).val(),
-          voltage_high: $("#voltage_high"+pk).val(),
-          voltage_low: $("#voltage_low"+pk).val(),
-          energy_high: $("#energy_high").val(),
-          energy_low: $("#energy_low").val(),
-
-          power_factor_high: $("#power_factor_high").val(),
-          power_factor_low: $("#power_factor_low").val(),
-
-          frequency_high: $("#frequency_high").val(),
-          frequency_low: $("#frequency_low").val(),
-
-          windspeed_high: $("#windspeed_high").val(),
-          windspeed_low: $("#windspeed_low").val(),
-
-          shaft_speed_high: $("#shaft_speed_high").val(),
-          shaft_speed_low: $("#shaft_speed_low").val(),
-
-          torque_high: $("#torque_high").val(),
-          torque_low: $("#torque_low").val(),
-
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-        };
-       console.log(payload)
-        var y1 = `<div class="edit-class${pk} m-4">
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">power Low</span>
-            </div>
-            <input type="text" class="form-control power_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">power High</span>
-            </div>
-            <input type="text" class="form-control power_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">current. Low</span>
-            </div>
-            <input type="text" class="form-control current_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">current. High</span>
-            </div>
-            <input type="text" class="form-control current_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">voltage  Low</span>
-            </div>
-            <input type="text" class="form-control voltage_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">voltage  High</span>
-            </div>
-            <input type="text" class="form-control voltage_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">energy  High</span>
-            </div>
-            <input type="text" class="form-control energy_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">energy low</span>
-            </div>
-            <input type="text" class="form-control energy_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">power_factor  Low</span>
-            </div>
-            <input type="text" class="form-control power_factor_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">power_factor  High</span>
-            </div>
-            <input type="text" class="form-control power_factor_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">frequency Low</span>
-            </div>
-            <input type="text" class="form-control frequency_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">frequency High</span>
-            </div>
-            <input type="text" class="form-control frequency_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">windspeed Low</span>
-            </div>
-            <input type="text" class="form-control windspeed_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">windspeed High</span>
-            </div>
-            <input type="text" class="form-control windspeed_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">shaft_speed Low</span>
-            </div>
-            <input type="text" class="form-control shaft_speed_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">shaft_speed High</span>
-            </div>
-            <input type="text" class="form-control shaft_speed_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">torque Low</span>
-            </div>
-            <input type="text" class="form-control torque_low${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div><div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">torque High</span>
-            </div>
-            <input type="text" class="form-control torque_high${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-         
-          <div class="input-group input-group-sm mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
-            </div>
-            <input type="text" class="form-control email${pk}" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-          </div>
-          <button type="button" class="btn btn-primary save-btn" id="${pk}">Submit</button>
-          <button type="button" class="btn btn-danger close-btn" id="${pk}">Close</button>
-        </div>`;
-  
-        $(".edit-class" + pk).replaceWith(y1);
-      });
-  
-      $("body").on("click", ".close-btn", function (e) {
-        e.preventDefault();
-        //create_token();
-        pk = this.id;
-        var payload = {
-          machine: $(".machine" + pk).text(),
-          location: $(".location" + pk).text(),
-          sub_location: $(".sub_location" + pk).text(),
-          uid: $(".UID" + pk).text(),
-          current_low: $("#current_low"+pk).val(),
-          current_high: $("#current_high"+pk).val(),
-          power_low: $("#power_low"+pk).val(),
-          power_high: $("#power_high"+pk).val(),
-          voltage_high: $("#voltage_high"+pk).val(),
-          voltage_low: $("#voltage_low"+pk).val(),
-
-          energy_high: $("#energy_high").val(),
-          energy_low: $("#energy_low").val(),
-
-          power_factor_high: $("#power_factor_high").val(),
-          power_factor_low: $("#power_factor_low").val(),
-
-          frequency_high: $("#frequency_high").val(),
-          frequency_low: $("#frequency_low").val(),
-
-          windspeed_high: $("#windspeed_high").val(),
-          windspeed_low: $("#windspeed_low").val(),
-
-          shaft_speed_high: $("#shaft_speed_high").val(),
-          shaft_speed_low: $("#shaft_speed_low").val(),
-
-          torque_high: $("#torque_high").val(),
-          torque_low: $("#torque_low").val(),
-
-
-          email: $("#email"+pk).val(),
-          csrfmiddlewaretoken: "{{ csrf_token }}",
-        };
-        //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-        $.ajax({
-          url: "/get_single_node/" + pk,
-          data: {},
-          //headers: headers_payload,
-          type: "GET",
-          contentType: "application/json",
-          success: function (result) {
-            //console.log(result[0].id)
-            //alert("Data: " + data + "\nStatus: " + status);
-            var data = result[0];
-            var z = `<div class="edit-class${pk}">
-              <div class="w-100 d-flex flex-column align-items-center justify-content-between">
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">power</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="power-${data.uuid}">${data.power}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">current</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="current-${data.uuid}">${data.current}<sup>o</sup>C</h5>
-                  </div>
-              </div>
-              <div class="d-flex flex-column align-items-center justify-content-between">
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">voltage</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="voltage-${data.uuid}">${data.voltage}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Energy </p>
-                    <h5 class="font-weight-bold textColor mb-1" id="energy-${data.uuid}">${data.energy}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Power Factor</p>
-                    <h5 class="font-weight-bold textColor mb-1" id="power_factor-${data.power_factor}">${data.power_factor}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Frequency</p>
-                    <h5 class="font-weight-bold textColor mb-1" id="lpm-${data.frequency}">${data.frequency}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">WindSpeed</p>
-                    <h5 class="font-weight-bold textColor mb-1" id="lpm-${data.windspeed}">${data.windspeed}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Shaft Speed (RPM)</p>
-                    <h5 class="font-weight-bold textColor mb-1" id="lpm-${data.shaft_speed}">${data.shaft_speed}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Torque</p>
-                    <h5 class="font-weight-bold textColor mb-1" id="lpm-${data.torque}">${data.torque}</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                      <p class="textColor font-weight-bold" style="font-size: 14px;">Battery</p>
-                      <h5 class="font-weight-bold textColor mb-1" id="battery-${data.uuid}">${data.battery}%</h5>
-                  </div>
-                  <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold" style="font-size: 14px;">Node Health : </p>
-                    <h5 class="font-weight-bold textColor mb-1"><a id="faulty${data.uuid}"></a></h5>
-                </div>
-              </div>
-            </div>`;
-  
-            $(".edit-class" + pk).replaceWith(z);
-          },
-        });
-      });
-  
-  
-       $("body").on("click", ".save-btn", function () {
-          create_token();
-          pk=this.id
-          var payload = {
-            //machine: $(".machine" + pk).val(),
-            //location: $(".location" + pk).val(),
-            //sub_location: $(".sub_location" + pk).val(),
-            //uuid: $(".UID" + pk).val(),
-            current_low: $(".current_low"+pk).val(),
-            current_high: $(".current_high"+pk).val(),
-            power_low: $(".power_low"+pk).val(),
-            power_high: $(".power_high"+pk).val(),
-            voltage_high: $(".voltage_high"+pk).val(),
-            voltage_low: $(".voltage_low"+pk).val(),
-
-            energy_high: $(".energy_high").val(),
-            energy_low: $(".energy_low").val(),
-
-            power_factor_high: $(".power_factor_high").val(),
-            power_factor_low: $(".power_factor_low").val(),
-
-            frequency_high: $(".frequency_high").val(),
-            frequency_low: $(".frequency_low").val(),
-
-            windspeed_high: $(".windspeed_high").val(),
-            windspeed_low: $(".windspeed_low").val(),
-
-            shaft_speed_high: $(".shaft_speed_high").val(),
-            shaft_speed_low: $(".shaft_speed_low").val(),
-
-            torque_high: $(".torque_high").val(),
-            torque_low: $(".torque_low").val(),
-            email: $(".email"+pk).val(),
-            };
-            headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-            console.log(payload);
-          $.ajax({
-            url: "/update_single_node/"+pk+"/",
-            type: "POST",
-            headers: headers_payload,
-            data : JSON.stringify(payload),
-            success: function (data, textStatus, jqXHR) {
-             jQuery.noConflict(); 
-             $('#changes').modal('show');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              alert(errorThrown);
-            },
-          });
-  
-      }); 
-  
-  
-      function get_data(uid,user_name,date,time){
-        //console.log("1"),
-        //create_token();
-        //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-        $.ajax({
-          url: "/send_node_data/"+uid+'/'+user_name+'/',
-          data: {},
-          //headers: headers_payload,
-          type: "GET",
-          contentType: "application/json",
-          success: function (result){
-            //console.log(result[0])
-            var u = result[0]['fields']['uuid'];
-            var b = result[0]['fields']['battery'];
-            var t = result[0]['fields']['current'];
-            var h = result[0]['fields']['power'];
-            var c = result[0]['fields']['voltage'];
-            var energy = result[0]['fields']['energy'];
-            var power_factor = result[0]['fields']['power_factor'];
-            var frequency = result[0]['fields']['frequency'];
-            var windspeed = result[0]['fields']['windspeed'];
-            var shaft_speed = result[0]['fields']['shaft_speed'];
-            var torque = result[0]['fields']['torque'];
-
-  
-            var th = result[0]['fields']['current_high'];
-            var hh = result[0]['fields']['power_high'];
-            var ch = result[0]['fields']['voltage_high'];
-            var energy_high = result[0]['fields']['energy_high'];
-            var power_factor_high = result[0]['fields']['power_factor_high'];
-            var frequency_high = result[0]['fields']['frequency_high'];
-            var windspeed_high = result[0]['fields']['windspeed_high'];
-            var shaft_speed_high = result[0]['fields']['shaft_speed_high'];
-            var torque_high = result[0]['fields']['torque_high'];
-
-  
-            var tl = result[0]['fields']['current_low'];
-            var hl = result[0]['fields']['power_low'];
-            var cl = result[0]['fields']['voltage_low'];
-            var energy_low = result[0]['fields']['energy_low'];
-            var power_factor_low = result[0]['fields']['power_factor_low'];
-            var frequency_low = result[0]['fields']['frequency_low'];
-            var windspeed_low = result[0]['fields']['windspeed_low'];
-            var shaft_speed_low = result[0]['fields']['shaft_speed_low'];
-            var torque_low = result[0]['fields']['torque_low'];
-
-            //var time = result[0]['fields']['updated_at'];
-  
-            $('#current-'+u).text(t);
-            $('#power-'+u).text(h);
-            $('#battery-'+u).text(b);
-            $('#voltage-'+u).text(c);
-            $('#energy-'+u).text(energy);
-            $('#power_factor-'+u).text(power_factor);
-            $('#frequency-'+u).text(frequency);
-            $('#windspeed-'+u).text(windspeed);
-            $('#shaft_speed-'+u).text(shaft_speed);
-            $('#torque-'+u).text(torque);
-
-  
-            if (Number(t) > Number(th) || Number(t) < Number(tl) || Number(h) > Number(hh) || Number(h) < Number(hl) || Number(c) > Number(ch) || Number(c) < Number(cl) || Number(frequency) > Number(frequency_high) || Number(frequency) < Number(frequency_low) || Number(frequency) > Number(frequency_high) || Number(frequency) < Number(frequency_low) || Number(windspeed) > Number(windspeed_high) || Number(windspeed) < Number(windspeed_low) || Number(shaft_speed) > Number(shaft_speed_high) || Number(shaft_speed) < Number(shaft_speed_low) || Number(torque) > Number(torque_high) || Number(torque) < Number(torque_low)
-            ) {
-              $('#faulty'+u).text('Not Healthy')
-              //console.log('Not Healthy')
-            }
-            else{
-              $('#faulty'+u).text('Healthy')
-             // console.log('Healthy')
-            };
-            //time = time.slice(0, -10); 
-            //time = time.substring(0, time.length - 10);
-            //console.log(time)
-            $('#time'+u).text(date +" @ "+time.slice(0, -10));
-                          
-          }
-        });};
-  
-  
-        function run_data(){
-          //create_token();
-          //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-          $.ajax({
-            url: "/all_data/",
-            data: {},
-            //headers: headers_payload,
-            type: "GET",
-            contentType: "application/json",
-            success: function (result){
-              //console.log(result)  
-              
-              for (let i = 0; i < result.length; i++) {
-  
-                //console.log(result[i]['fields']['uuid']);
-  
-                var uid = result[i]['fields']['uuid'];
-                var user_name = result[i]['fields']['user_name'];
-                var date = result[i]['fields']['date'];
-                var time = result[i]['fields']['time'];
-  
-                get_data(uid,user_name,date,time);
-              }
-              
-            }
-          });};
-  
-  
-  
-        setInterval( run_data, 5000);
-  
-        //---------------------------------------------------------------------------------------------------------------------
-  
-  
-  
-  
-  
-        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-  Chart.defaults.global.defaultFontColor = '#858796';
-  
-  function number_format(number, decimals, dec_point, thousands_sep) {
-  // *     example: number_format(1234.56, 2, ',', ' ');
-  // *     return: '1 234,56'
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-  prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-  sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-  dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-  s = '',
-  toFixedFix = function(n, prec) {
-    var k = Math.pow(10, prec);
-    return '' + Math.round(n * k) / k;
-  };
-  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-  s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-  s[1] = s[1] || '';
-  s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-  }
-  
-  // Area Chart Example
-  function graph (label,data1,data2,data3,data4,data5,data6,data7,data8,data9){
-  var ctx = document.getElementById("myAreaChart");
-  var myLineChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-  labels: label,
-  datasets: [{
-    label: "current",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#d45087",
-    pointRadius: 3,
-    pointBackgroundColor: "#d45087",
-    pointBorderColor: "#d45087",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "#d45087",
-    pointHoverBorderColor: "#d45087",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data1,
-  },
-  {
-    label: "power",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "rgba(78, 115, 223, 1)",
-    pointRadius: 3,
-    pointBackgroundColor: "blue",
-    pointBorderColor: "rgba(78, 115, 223, 1)",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data2,
-  },
-  {
-    label: "voltage",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "yellow",
-    pointRadius: 3,
-    pointBackgroundColor: "yellow",
-    pointBorderColor: "yellow",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "yellow",
-    pointHoverBorderColor: "yellow",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data3,
-  },
-  {
-    label: "energy",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "purple",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data4,
-  },
-  {
-    label: "power_factor",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#A9A9A9",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data5,
-  },
-  {
-    label: "frequency",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#000080",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data6,
-  },
-  {
-    label: "windspeed",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#006400",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data7,
-  },
-  {
-    label: "shaft_speed",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#654321",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data8,
-  },
-  {
-    label: "torque",
-    lineTension: 0.3,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#2F4F4F",
-    pointRadius: 3,
-    pointBackgroundColor: "purple",
-    pointBorderColor: "purple",
-    pointHoverRadius: 3,
-    pointHoverBackgroundColor: "purple",
-    pointHoverBorderColor: "purple",
-    pointHitRadius: 10,
-    pointBorderWidth: 2,
-    data: data9,
-  }],
-  },
-  options: {
-  maintainAspectRatio: false,
-  layout: {
-    padding: {
-      left: 10,
-      right: 25,
-      top: 25,
-      bottom: 0
-    }
-  },
-  scales: {
-    xAxes: [{
-      time: {
-        unit: 'date'
-      },
-      gridLines: {
-        display: false,
-        drawBorder: false
-      },
-      ticks: {
-        maxTicksLimit: 7
-      }
-    }],
-    yAxes: [{
-      ticks: {
-        maxTicksLimit: 5,
-        padding: 10,
-        // Include a dollar sign in the ticks
-        callback: function(value, index, values) {
-          return number_format(value);
+              </a>
+              `);
+              $("#delete_node" + result[i]["fields"]["node_id"]).hide();
+              //console.log("#delete_node" + result[i]["fields"]["node_id"])
+          };
         }
-      },
-      gridLines: {
-        color: "rgb(234, 236, 244)",
-        zeroLineColor: "rgb(234, 236, 244)",
-        drawBorder: false,
-        borderDash: [2],
-        zeroLineBorderDash: [2]
+        else {
+          $("#notification-list").append(`
+            <a class="dropdown-item bg-transparent" id="">
+              <div class="noti rounded border-dark border">
+                <div class="toast-header">
+                  <strong class="mr-auto h4"> No Notifications </strong>
+                </div>
+              </div>
+            </a>`)
+        }
       }
-    }],
-  },
-  legend: {
-    display: false
-  },
-  tooltips: {
-    backgroundColor: "rgb(255,255,255)",
-    bodyFontColor: "#858796",
-    titleMarginBottom: 10,
-    titleFontColor: '#6e707e',
-    titleFontSize: 14,
-    borderColor: '#dddfeb',
-    borderWidth: 1,
-    xPadding: 15,
-    yPadding: 15,
-    displayColors: false,
-    intersect: false,
-    mode: 'index',
-    caretPadding: 10,
-    callbacks: {
-      label: function(tooltipItem, chart) {
-        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-        return datasetLabel + ':' +  number_format(tooltipItem.yLabel);
-      }
-    }
-  }
-  }
-  });};
-  
-  $("#senddata").click(function (e) {
-  e.preventDefault();
-  create_token();
-  var payload_add = {
-  uuid: $("#uuid_graph").val(),
-  field: $("#field").val(),
-  start_date: $("#start_date").val(),
-  end_date: $("#end_date").val(),   
-  start_time: $("#start_time").val(),
-  end_time: $("#end_time").val(),    
+    });
   };
-  if(Math.floor((Date.parse($("#end_date").val()) - Date.parse($("#start_date").val())) / 86400000) < 90){
-  headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-  $.ajax({
-  url: "/graph"+"/",
-  headers: headers_payload,
-  type: "POST",
-  data: JSON.stringify(payload_add),
-  success: function (data, textStatus, jqXHR) {
-    
-    var label = [];
-    var data1 = [];
-    var data2 = [];
-    var data3 = [];
-    var data4 = [];
-    var data5 = [];
-    var data6 = [];
-    var data7 = [];
-    var data8 = [];
-    var data9 = []; 
-  
-    $('#table-report').empty();
-  
-    for (let i = 0; i < data.length; i++) {
-      label.push(data[i]["fields"]["date"]);
-      data1.push(data[i]["fields"]["current"]);
-      data2.push(data[i]["fields"]["power"]);
-      data3.push(data[i]["fields"]["voltage"]);
-      data4.push(data[i]["fields"]["energy"]);
-      data5.push(data[i]["fields"]["power_factor"]);
-      data6.push(data[i]["fields"]["frequency"]);
-      data7.push(data[i]["fields"]["windspeed"]);
-      data8.push(data[i]["fields"]["shaft_speed"]);
-      data9.push(data[i]["fields"]["torque"]);
+  setInterval(run_notification_data, 2000);
 
-  
-  
-      var uuid = data[i]['fields']['uuid'];
-      var battery = data[i]['fields']['battery'];
-      var current = data[i]['fields']['current'];
-      var power = data[i]['fields']['power'];
-      var voltage = data[i]['fields']['voltage'];
 
-      var energy = data[i]['fields']['energy'];
-      var power_factor = data[i]['fields']['power_factor'];
-      var frequency = data[i]['fields']['frequency'];
-      var windspeed = data[i]['fields']['windspeed'];
-      var shaft_speed = data[i]['fields']['shaft_speed'];
-      var torque = data[i]['fields']['torque'];
-
-      
-      var date = data[i]['fields']['date'];
-      var time = data[i]['fields']['time'];
-      var power = data[i]['fields']['power'];
-      var battery = data[i]['fields']['battery'];
-  
-      $("#table-report").append(`<tr>
-        <th scope="row">${i}</th>
-        <td>${date}</td>
-        <td>${time}</td>
-        <td>${uuid}</td>
-        <td>${current}</td>
-        <td>${voltage}</td>
-        <td>${energy}</td>
-        <td>${power_factor}</td>
-        <td>${frequency}</td>
-        <td>${windspeed}</td>
-        <td>${shaft_speed}</td>
-        <td>${torque}</td>
-        <td>${power}</td>
-        <td>${battery}</td>
-      </tr>`);
-  
-    };
-    $("#myAreaChart").remove()
-    $("#graph_div").append(`<canvas id="myAreaChart"></canvas>`)
-    graph (label,data1,data2,data3,data4.data5,data6,data7,data8,data9);
-  
-    uuid= $("#uuid_graph").val(),
-    start_time= $("#start_time").val(),
-    end_time= $("#end_time").val(),   
-    start_date= $("#start_date").val(),
-    end_date= $("#end_date").val(),   
-    $("#node_name").text(uuid)
-    $("#node_date").text(start_date+"-"+end_date) 
-    $("#node_time").text(start_time+"-"+end_time)
-    $("#print_table").attr("href", "/generateinvoice/"+uuid+"/"+start_time+"/"+end_time+"/"+start_date+"/"+end_date+"/")
-  
-    // data1.push(data[i]["fields"]["current"]);
-    // data2.push(data[i]["fields"]["power"]);
-    // data3.push(data[i]["fields"]["voltage"]);
-  
-    function getStandardDeviation (array) {
-    const n = array.length
-    const mean = array.reduce((a, b) => a + b) / n
-    return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)}
-  
-    sd_current = getStandardDeviation(data1)
-    sd_power = getStandardDeviation(data2)
-    sd_voltage = getStandardDeviation(data3)
-    sd_energy = getStandardDeviation(data4)
-    sd_power_factor = getStandardDeviation(data5)
-    sd_frequency = getStandardDeviation(data6)
-    sd_windspeed = getStandardDeviation(data7)
-    sd_shaft_speed = getStandardDeviation(data8)
-    sd_torque = getStandardDeviation(data9)
-
-  
-    $("#sd_current").text(sd_current)
-    $("#sd_power").text(sd_power) 
-    $("#sd_voltage").text(sd_voltage)
-    $("#sd_energy").text(sd_energy)
-    $("#sd_power_factor").text(sd_power_factor)
-    $("#sd_frequency").text(sd_frequency)
-    $("#sd_windspeed").text(sd_windspeed)
-    $("#sd_shaft_speed").text(sd_shaft_speed)
-    $("#sd_torque").text(sd_torque)
-
-  
-    function findVariance (arr) {
-      if(!arr.length){
-          return 0;
-      };
-      const sum = arr.reduce((acc, val) => acc + val);
-      const { length : num } = arr;
-      const median = sum / num;
-      let variance = 0;
-      arr.forEach(num => {
-          variance += ((num - median) * (num - median));
-      });
-      variance /= num;
-      return variance;}
-  
-    vari_current = findVariance(data1)
-    vari_power = findVariance(data2)
-    vari_voltage = findVariance(data3)
-    vari_energy = findVariance(data4)
-    vari_power_factor = findVariance(data5)
-    vari_frequency = findVariance(data6)
-    vari_windspeed = findVariance(data7)
-    vari_shaft_speed = findVariance(data8)
-    vari_torque = findVariance(data9)
-
-  
-    $("#vari_current").text(vari_current)
-    $("#vari_power").text(vari_power) 
-    $("#vari_voltage").text(vari_voltage)
-    $("#vari_energy").text(vari_energy)
-    $("#vari_power_factor").text(vari_power_factor)
-    $("#vari_frequency").text(vari_frequency)
-    $("#vari_windspeed").text(vari_windspeed)
-    $("#vari_shaft_speed").text(vari_shaft_speed)
-    $("#vari_torque").text(vari_torque)
-
-    function calculateAverage(array) {
-      var total = 0;
-      var count = 0;
-  
-      array.forEach(function(item, index) {
-          total += item;
-          count++;
-      });
-  
-      return total / count}
-  
-      mean_current = calculateAverage(data1)
-      mean_power = calculateAverage(data2)
-      mean_voltage = calculateAverage(data3)
-      mean_energy = calculateAverage(data4)
-      mean_power_factor = calculateAverage(data5)
-      mean_frequency = calculateAverage(data6)
-      mean_windspeed = calculateAverage(data7)
-      mean_shaft_speed = calculateAverage(data8)
-      mean_torque = calculateAverage(data9)
-
-  
-      function ParseFloat(str,val) {
-        str = str.toString();
-        str = str.slice(0, (str.indexOf(".")) + val + 1);
-        return Number(str);
+  function check_deleted_nodes() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/check_deleted_nodes/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+        for (let i = 0; i < result.length; i++) {
+          //console.log("#delete_node" + result[i]["pk"])  
+          //$("#delete_node" + result[i]["pk"]).addClass("d-none");
+        document.getElementById("delete_node" + String(result[i]["pk"])).remove();
+        };
       }
-  
-    $("#mean_current").text(ParseFloat(mean_current,2))
-    $("#mean_power").text(ParseFloat(mean_power,2)) 
-    $("#mean_voltage").text(ParseFloat(mean_voltage,2))
-    $("#mean_energy").text(ParseFloat(mean_energy,2))
-    $("#mean_power_factor").text(ParseFloat(mean_power_factor,2))
-    $("#mean_frequency").text(ParseFloat(mean_frequency,2))
-    $("#mean_windspeed").text(ParseFloat(mean_windspeed,2))
-    $("#mean_shaft_speed").text(ParseFloat(mean_shaft_speed,2))
-    $("#mean_torque").text(ParseFloat(mean_torque,2))
+    });
+  };
+  setInterval(check_deleted_nodes, 2000);
 
-    },
-  
-  error: function (jqXHR, textStatus, errorThrown) {
-    alert(errorThrown);
-  },
-  
-  })}
-  else{
-    // console.log(Math.floor((Date.parse($("#end_date").val()) - Date.parse($("#start_date").val())) / 86400000))
-    // console.log($("#start_date").val())
-    // console.log((end_date.val()))
-    alert("Select Dates Till 3 months")
+  //---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+  Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+  Chart.defaults.global.defaultFontColor = '#858796';
+
+  function number_format(number, decimals, dec_point, thousands_sep) {
+    // *     example: number_format(1234.56, 2, ',', ' ');
+    // *     return: '1 234,56'
+    number = (number + '').replace(',', '').replace(' ', '');
+    var n = !isFinite(+number) ? 0 : +number,
+      prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+      sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+      dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+      s = '',
+      toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return '' + Math.round(n * k) / k;
+      };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+      s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+      s[1] = s[1] || '';
+      s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
   }
-  ;});
-  
-  
-  
+
+  // Area Chart Example
+  function graph(label, data1, data2, data3, data4, data5) {
+    var ctx = document.getElementById("myAreaChart");
+    var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: label,
+        datasets: [{
+          label: "current",
+          lineTension: 0.3,
+          backgroundColor: "#FFFFFF",
+          borderColor: "#FF0000",
+          pointRadius: 3,
+          pointBackgroundColor: "#FF0000",
+          pointBorderColor: "#FF0000",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "#FF0000",
+          pointHoverBorderColor: "#FF0000",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: data1,
+        },
+        {
+          label: "power",
+          lineTension: 0.3,
+          backgroundColor: "#FFFFFF",
+          borderColor: "#30e3e3",
+          pointRadius: 3,
+          pointBackgroundColor: "#30e3e3",
+          pointBorderColor: "#30e3e3",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "#30e3e3",
+          pointHoverBorderColor: "#30e3e3",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: data2,
+        },
+        {
+          label: "voltage",
+          lineTension: 0.3,
+          backgroundColor: "#FFFFFF",
+          borderColor: "#0000FF",
+          pointRadius: 3,
+          pointBackgroundColor: "#0000FF",
+          pointBorderColor: "#0000FF",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "#0000FF",
+          pointHoverBorderColor: "#0000FF",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: data3,
+        },
+        {
+          label: "generator speed",
+          lineTension: 0.3,
+          backgroundColor: "#FFFFFF",
+          borderColor: "#FFA500",
+          pointRadius: 3,
+          pointBackgroundColor: "FFA500",
+          pointBorderColor: "FFA500",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "FFA500",
+          pointHoverBorderColor: "FFA500",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: data4,
+        },
+        {
+          label: "windspeed",
+          lineTension: 0.3,
+          backgroundColor: "#FFFFFF",
+          borderColor: "#800080",
+          pointRadius: 3,
+          pointBackgroundColor: "#800080",
+          pointBorderColor: "#800080",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "#800080",
+          pointHoverBorderColor: "#800080",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: data5,
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+          }
+        },
+        scales: {
+          xAxes: [{
+            time: {
+              unit: 'date'
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              maxTicksLimit: 7
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              callback: function (value, index, values) {
+                return number_format(value);
+              }
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: true,
+              borderDash: [2],
+              zeroLineBorderDash: [2]
+            }
+          }],
+        },
+        legend: {
+          display: true
+        },
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          titleMarginBottom: 10,
+          titleFontColor: '#6e707e',
+          titleFontSize: 14,
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          intersect: true,
+          mode: 'index',
+          caretPadding: 10,
+          callbacks: {
+            label: function (tooltipItem, chart) {
+              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+              return datasetLabel + ':' + number_format(tooltipItem.yLabel);
+            }
+          }
+        }
+      }
+    });
+  };
+
+  $("#senddata").click(function (e) {
+    e.preventDefault();
+    create_token();
+    var payload_add = {
+      uuid: $("#uuid_graph").val(),
+      field: $("#field").val(),
+      start_date: $("#start_date").val(),
+      end_date: $("#end_date").val(),
+      start_time: $("#start_time").val(),
+      end_time: $("#end_time").val(),
+    };
+    if (Math.floor((Date.parse($("#end_date").val()) - Date.parse($("#start_date").val())) / 86400000) < 90) {
+      headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+      $.ajax({
+        url: "/graph" + "/",
+        headers: headers_payload,
+        type: "POST",
+        data: JSON.stringify(payload_add),
+        success: function (data, textStatus, jqXHR) {
+
+          console.log(data);
+
+          var label = data["labels"];
+          var data1 = (data["current"] || [0]);
+          var data2 = (data["power"] || [0]);
+          var data3 = (data["voltage"] || [0]);
+          var data4 = (data["generator_speed"] || [0]);
+          var data5 = (data["windspeed"] || [0]);
+
+          $('#table-report').empty();
+          $("#myAreaChart").remove()
+          $("#graph_div").append(`<canvas id="myAreaChart"></canvas>`)
+
+          graph(label, data1, data2, data3, data4, data5);
+
+          uuid = $("#uuid_graph").val(),
+            start_time = $("#start_time").val(),
+            end_time = $("#end_time").val(),
+            start_date = $("#start_date").val(),
+            end_date = $("#end_date").val(),
+            $("#node_name").text(uuid)
+          $("#node_date").text(start_date + "-" + end_date)
+          $("#node_time").text(start_time + "-" + end_time)
+          $("#print_table").attr("href", "/generateinvoice/" + uuid + "/" + start_time + "/" + end_time + "/" + start_date + "/" + end_date + "/")
+
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+        },
+
+      })
+    }
+    else {
+      alert("Select Dates Till 3 months")
+    }
+    ;
+  });
+
+
+
+  $("#senddata").click(function (e) {
+
+    create_token();
+    var payload_add = {
+      uuid: $("#uuid_graph").val(),
+      field: $("#field").val(),
+      start_date: $("#start_date").val(),
+      end_date: $("#end_date").val(),
+      start_time: $("#start_time").val(),
+      end_time: $("#end_time").val(),
+    };
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    $.ajax({
+      url: "/statis/",
+      headers: headers_payload,
+      data: JSON.stringify(payload_add),
+      type: "POST",
+      success: function (data, textStatus, jqXHR) {
+        //console.log(data.current_std),
+        data = JSON.parse(data),
+          $("#sd_current").text(data["current_std"]),
+          $("#sd_power").text(data["power_std"]),
+          $("#sd_voltage").text(data["voltage_std"]),
+          $("#sd_generator_speed").text(data["generator_speed_std"]),
+          $("#sd_windspeed").text(data["windspeed_std"]),
+
+
+          $("#vari_current").text(data["current_var"]),
+          $("#vari_power").text(data["power_var"]),
+          $("#vari_voltage").text(data["voltage_var"]),
+          $("#vari_generator_speed").text(data["generator_speed_var"]),
+          $("#vari_windspeed").text(data["windspeed_var"]),
+
+
+          $("#mean_current").text(data["current_mean"]),
+          $("#mean_power").text(data["power_mean"]),
+          $("#mean_voltage").text(data["voltage_mean"]),
+          $("#mean_generator_speed").text(data["generator_speed_mean"]),
+          $("#mean_windspeed").text(data["windspeed_mean"])
+
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+        jQuery.noConflict();
+        $('#stats_error').modal('show');
+      }
+    });
+  })
+
+
+
   $("#senddata").click(function (e) {
     create_token();
     var payload_add = {
       uuid: $("#uuid_graph").val(),
       field: $("#field").val(),
       start_date: $("#start_date").val(),
-      end_date: $("#end_date").val(),   
+      end_date: $("#end_date").val(),
       start_time: $("#start_time").val(),
-      end_time: $("#end_time").val(),    
-      };
-    uuid= $("#uuid_graph").val(),
-    headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+      end_time: $("#end_time").val(),
+    };
+    uuid = $("#uuid_graph").val(),
+      headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
     $.ajax({
-      url: "/insight_current_week/"+uuid,
+      url: "/insight_current_week/" + uuid,
       headers: headers_payload,
       data: JSON.stringify(payload_add),
       type: "POST",
@@ -1177,126 +1036,160 @@
       error: function (jqXHR, textStatus, errorThrown) {
         alert(errorThrown);
       }
-      });
-  
-      $.ajax({
-        url: "/insight_current_month/"+uuid,
-        headers: headers_payload,
-        type: "POST",
-        success: function (data, textStatus, jqXHR) {
-          console.log(data)
-          $("#insights_month").text(data)
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          alert(errorThrown);
-        }
-        });
-  
-        $.ajax({
-          url: "/insight_current_range",
-          headers: headers_payload,
-          data: JSON.stringify(payload_add),
-          type: "POST",
-          success: function (data, textStatus, jqXHR) {
-            console.log(data)
-            $("#insights_time").text(data)
-            $("#node_date").text(start_date+"-"+end_date) 
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          }
-          });
-  });
-  
-  
-  $("#print_graph").click(function (e){
-  e.preventDefault();
-    uuid= $("#uuid_graph").val(),
-    start_date= $("#start_date").val(),
-    end_date= $("#end_date").val(),   
-    start_time= $("#start_time").val(),
-    end_time= $("#end_time").val(),   
-    $("#node_name").text(uuid)
-    $("#node_date").text(start_date+"-"+end_date) 
-    $("#node_time").text(start_time+"-"+end_time) 
-  
-    //var HTML_Width = $("#pdf").width();
-      //var HTML_Height = $("#pdf").height();
-      //var top_left_margin = 15;
-      //var PDF_Width = HTML_Width+(top_left_margin*2);
-      //var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
-      //var canvas_image_width = HTML_Width;
-      //var canvas_image_height = HTML_Height;
-  
-      var HTML_Width = 1080;
-      var HTML_Height = 720;
-      var top_left_margin = 15;
-      var PDF_Width = HTML_Width+(top_left_margin*2);
-      var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
-      var canvas_image_width = HTML_Width;
-      var canvas_image_height = HTML_Height;
-      
-      var totalPDFPages = Math.ceil(HTML_Height/PDF_Height)-1;
-      
-  
-      html2canvas($("#canvas_div_pdf")[0],{allowTaint:true}).then(function(canvas) {
-          canvas.getContext('2d');
-          
-          console.log(canvas.height+"  "+canvas.width);
-          
-          
-          var imgData = canvas.toDataURL("image/jpeg", 1.0);
-          var pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
-          pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin,canvas_image_width,canvas_image_height);
-          
-          
-          for (var i = 1; i <= totalPDFPages; i++) { 
-              pdf.addPage(PDF_Width, PDF_Height);
-              pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
-          }
-          
-          pdf.save("Document.pdf");
-      });
-  
-  });
-  
-  
-  $("#glance").click(function (e){
-  e.preventDefault();
-  var HTML_Width = $("#appender").width();
-  var HTML_Height = $("#appender").height();
-  var top_left_margin = 15;
-  var PDF_Width = HTML_Width+(top_left_margin*2);
-  var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
-  var canvas_image_width = HTML_Width;
-  var canvas_image_height = HTML_Height;
-  
-  var totalPDFPages = Math.ceil(HTML_Height/PDF_Height)-1;
-  
-  
-  html2canvas($("#appender")[0],{allowTaint:true}).then(function(canvas) {
-  canvas.getContext('2d');
-  
-  console.log(canvas.height+"  "+canvas.width);
-  
-  
-  var imgData = canvas.toDataURL("image/jpeg", 1.0);
-  var pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
-    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin,canvas_image_width,canvas_image_height);
-  
-  
-  for (var i = 1; i <= totalPDFPages; i++) { 
-    pdf.addPage(PDF_Width, PDF_Height);
-    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
-  }
-  
-    pdf.save("Document.pdf");
     });
-  
+
+    $.ajax({
+      url: "/insight_current_month/" + uuid,
+      headers: headers_payload,
+      type: "POST",
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        $("#insights_month").text(data)
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      }
+    });
+
+    $.ajax({
+      url: "/insight_current_range",
+      headers: headers_payload,
+      data: JSON.stringify(payload_add),
+      type: "POST",
+      success: function (data, textStatus, jqXHR) {
+        console.log(data)
+        $("#insights_time").text(data)
+        $("#node_date").text(start_date + "-" + end_date)
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      }
+    });
   });
-  
-    //$("#sidebarToggleTop").click();
-  
+
+
+  $("#senddata").click(function () {
+    $('.filter').addClass('d-none');
+    $('.stats-area').removeClass('d-none')
+  });
+
+  $("#back-btn").click(function () {
+    $('.filter').removeClass('d-none');
+    $('.stats-area').addClass('d-none')
+  });
+
+
+
+
+  function printDiv(divId) {
+    var divToPrint = document.getElementById(divId);
+
+    //var navbar = document.getElementById("accordionSidebar");
+    //navbar.style.visibility = 'hidden';
+
+    divToPrint.style.visibility = 'visible';
+    window.print();
+    // Reset visibility after printing (optional)
+    divToPrint.style.visibility = 'visible';
+    //navbar.style.visibility = 'visible';
+  }
+
+
+  var printButton = document.getElementById('print_graph_1');
+  printButton.addEventListener('click', function () {
+    printDiv("canvas_div_pdf")
+  });
+
+
+
+  $("#print_graph").click(function (e) {
+    e.preventDefault();
+    uuid = $("#uuid_graph").val(),
+      start_date = $("#start_date").val(),
+      end_date = $("#end_date").val(),
+      start_time = $("#start_time").val(),
+      end_time = $("#end_time").val(),
+      $("#node_name").text(uuid)
+    $("#node_date").text(start_date + "-" + end_date)
+    $("#node_time").text(start_time + "-" + end_time)
+
+    //var HTML_Width = $("#pdf").width();
+    //var HTML_Height = $("#pdf").height();
+    //var top_left_margin = 15;
+    //var PDF_Width = HTML_Width+(top_left_margin*2);
+    //var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
+    //var canvas_image_width = HTML_Width;
+    //var canvas_image_height = HTML_Height;
+
+    var HTML_Width = 1080;
+    var HTML_Height = 720;
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+
+    html2canvas($("#canvas_div_pdf")[0], { allowTaint: true }).then(function (canvas) {
+      canvas.getContext('2d');
+
+      console.log(canvas.height + "  " + canvas.width);
+
+
+      var imgData = canvas.toDataURL("image/jpeg", 1.0);
+      var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+      pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+
+      for (var i = 1; i <= totalPDFPages; i++) {
+        pdf.addPage(PDF_Width, PDF_Height);
+        pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+      }
+
+      pdf.save("Document.pdf");
+    });
+
+  });
+
+
+  $("#glance").click(function (e) {
+    e.preventDefault();
+    var HTML_Width = $("#appender").width();
+    var HTML_Height = $("#appender").height();
+    var top_left_margin = 15;
+    var PDF_Width = HTML_Width + (top_left_margin * 2);
+    var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+
+    html2canvas($("#appender")[0], { allowTaint: true }).then(function (canvas) {
+      canvas.getContext('2d');
+
+      console.log(canvas.height + "  " + canvas.width);
+
+
+      var imgData = canvas.toDataURL("image/jpeg", 1.0);
+      var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+      pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+
+      for (var i = 1; i <= totalPDFPages; i++) {
+        pdf.addPage(PDF_Width, PDF_Height);
+        pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+      }
+
+      pdf.save("Document.pdf");
+    });
+
+  });
+
+  //$("#sidebarToggleTop").click();
+
   //   $("#print_table").click(function (e){
   //     create_token();
   //     var payload_add = {
@@ -1317,89 +1210,99 @@
   //       data
   //     }
   //     })
-      
+
   // });
-  
-      // $("#print_table").click(function (){
-      //   uuid= $("#uuid_graph").val(),
-      //   start_date= $("#start_date").val(),
-      //   end_date= $("#end_date").val(),   
-      //   start_time= $("#start_time").val(),
-      //   end_time= $("#end_time").val(),
-      //   $("#print_table").attr("href", "/generateinvoice/"+uuid+"/"+start_time+"/"+end_date+"/"+start_date+"/"+end_date+"/")
-      // })
-  
-  
-    
-    $("body").on("click", "#id-1", function (){
-      $("#appender").removeClass("d-none")
-      $(".class-2").addClass("d-none")
-      $(".class-3").addClass("d-none")
-      });
-  
-      $("body").on("click", "#id-2", function (){
-        $(".class-2").removeClass("d-none")
-        $("#appender").addClass("d-none")
-        $(".class-3").addClass("d-none")
-      });
-  
-      $("body").on("click", "#id-3", function (){
-        $(".class-3").removeClass("d-none")
-        $(".class-2").addClass("d-none")
-        $("#appender").addClass("d-none")
-      });
-  
-      $("body").on("click", "#node1", function (){
-  
-        navigator.geolocation.getCurrentPosition(success, error);
-  
-        function success(position) {
-            console.log(position.coords.latitude);
-            $('#latitude').val(position.coords.latitude);
-            console.log(position.coords.longitude);
-            $('#longitude').val(position.coords.longitude);
-  
-            var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en';
-  
-            $.getJSON(GEOCODING).done(function(location) {
-                console.log(location)
-            })
-  
-        }
-  
-        function error(err) {
-            console.log(err)
-        }
-  
-      });
-  
-      $("body").on("click", "#create_user_button", function (e) {
-        create_token();
-        var payload = {
-          first_name: $("#user_fname").val(),
-          last_name: $("#user_lname").val(),
-          username: $("#user_uname").val(),
-          password: $("#user_pass").val(),
-          role: $('input[name="roles"]:checked').val(),
-          };
-          headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
-  
-          if ((payload.first_name).length == 0 || (payload.last_name).length == 0 || (payload.username).length == 0 || (($('input[name="roles"]:checked')).length) == 0 ){
-            jQuery.noConflict(); 
-            $("#user_modal").modal("hide");
-            $('#fields').modal('show');
-          }
-          else{
-            $.ajax({
-              url: "/user_veiw",
-              type: "POST",
-              headers: headers_payload,
-              data : JSON.stringify(payload),
-              success: function (data, textStatus, jqXHR) {
-                jQuery.noConflict(); 
-                $('#user_create').modal('show');
-    
-               q = `<tr class="user_row_${data}">
+
+  // $("#print_table").click(function (){
+  //   uuid= $("#uuid_graph").val(),
+  //   start_date= $("#start_date").val(),
+  //   end_date= $("#end_date").val(),   
+  //   start_time= $("#start_time").val(),
+  //   end_time= $("#end_time").val(),
+  //   $("#print_table").attr("href", "/generateinvoice/"+uuid+"/"+start_time+"/"+end_date+"/"+start_date+"/"+end_date+"/")
+  // })
+
+
+
+  $("body").on("click", "#id-1", function () {
+    $("#appender").removeClass("d-none")
+    $(".class-2").addClass("d-none")
+    $(".class-3").addClass("d-none")
+    $(".class-4").addClass("d-none")
+  });
+
+  $("body").on("click", "#id-2", function () {
+    $(".class-2").removeClass("d-none")
+    $("#appender").addClass("d-none")
+    $(".class-3").addClass("d-none")
+    $(".class-4").addClass("d-none")
+  });
+
+  $("body").on("click", "#id-3", function () {
+    $(".class-3").removeClass("d-none")
+    $(".class-2").addClass("d-none")
+    $("#appender").addClass("d-none")
+    $(".class-4").addClass("d-none")
+  });
+
+  $("body").on("click", "#id-4", function () {
+    $(".class-4").removeClass("d-none")
+    $(".class-3").addClass("d-none")
+    $(".class-2").addClass("d-none")
+    $("#appender").addClass("d-none")
+  });
+
+  // $("body").on("click", "#node1", function () {
+
+  //   navigator.geolocation.getCurrentPosition(success, error);
+
+  //   function success(position) {
+  //     console.log(position.coords.latitude);
+  //     $('#latitude').val(position.coords.latitude);
+  //     console.log(position.coords.longitude);
+  //     $('#longitude').val(position.coords.longitude);
+
+  //     var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en';
+
+  //     $.getJSON(GEOCODING).done(function (location) {
+  //       console.log(location)
+  //     })
+
+  //   }
+
+  //   function error(err) {
+  //     console.log(err)
+  //   }
+
+  // });
+
+  $("body").on("click", "#create_user_button", function (e) {
+    create_token();
+    var payload = {
+      first_name: $("#user_fname").val(),
+      last_name: $("#user_lname").val(),
+      username: $("#user_uname").val(),
+      password: $("#user_pass").val(),
+      role: $('input[name="roles"]:checked').val(),
+    };
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' };
+
+    if ((payload.first_name).length == 0 || (payload.last_name).length == 0 || (payload.username).length == 0 || (($('input[name="roles"]:checked')).length) == 0) {
+      jQuery.noConflict();
+      $("#user_modal").modal("hide");
+      $('#fields').modal('show');
+    }
+    else {
+      $.ajax({
+        url: "/user_veiw",
+        type: "POST",
+        headers: headers_payload,
+        data: JSON.stringify(payload),
+        success: function (data, textStatus, jqXHR) {
+          jQuery.noConflict();
+          $('#user_create').modal('show');
+
+          q = `<tr class="user_row_${data}">
                 <td>${data}</td>
                 <td>${payload.first_name} ${payload.last_name}</td>
                 <td>${payload.username}</td>
@@ -1417,173 +1320,172 @@
                 </div></td>
                 <td><button type="button" class="btn btn-danger delete_user" id="${data}">Delete</button></td>
               </tr>`,
-              $("#user_table").append(q),
-              $("#user_modal").modal("hide")
-              },
-              error: function (jqXHR, textStatus, errorThrown) {
-                alert(errorThrown);
-              },
-            });
-          }
-  
-          
+            $("#user_table").append(q),
+            $("#user_modal").modal("hide")
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          alert(errorThrown);
+        },
       });
-      
-      $("body").on("click", ".delete_user", function (e) {
-        create_token();
-  
-        id = this.id
-  
-        var payload = {
-          id : id,
-        }
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
-        $.ajax({
-          url: "/user_veiw",
-          type: "DELETE",
-          headers: headers_payload,
-          data : JSON.stringify(payload),
-          success: function (data, textStatus, jqXHR) {
-          $(".user_row_"+id).hide()
-          $('#user_delete_modal').modal('show');
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        });      
-        
-      });
-  
-  
-  
-      $("body").on("click", ".super_admin", function (e) {
-        create_token();
-  
-        id = this.id
-  
-        var payload = {
-          id : id,
-          role: 'super admins',
-        }
-        console.log(payload)
-  
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
-  
-        $.ajax({
-          url: "/user_veiw",
-          type: "PUT",
-          headers: headers_payload,
-          data : JSON.stringify(payload),
-          success: function (data, textStatus, jqXHR) {
-            $(".admins_"+id).text("super admins")
-            $(".admin_"+id).text("super admins")
-            $(".observer_"+id).text("super admins")
-            $(".user_"+id).text("super admins")
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        }); 
-  
-      });
-  
-  
-      $("body").on("click", ".admin", function (e) {
-        create_token();
-  
-        id = this.id
-  
-        var payload = {
-          id : id,
-          role: 'admin',
-        }
-        console.log(payload)
-  
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
-  
-        $.ajax({
-          url: "/user_veiw",
-          type: "PUT",
-          headers: headers_payload,
-          data : JSON.stringify(payload),
-          success: function (data, textStatus, jqXHR) {
-          $(".admins_"+id).text("admin")
-          $(".admin_"+id).text("admin")
-          $(".observer_"+id).text("admin")
-          $(".user_"+id).text("admin")
-  
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        }); 
-  
-      });
-  
-      $("body").on("click", ".observer", function (e) {
-        create_token();
-  
-        id = this.id
-  
-        var payload = {
-          id : id,
-          role: 'observer',
-        }
-        console.log(payload)
-  
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
-  
-        $.ajax({
-          url: "/user_veiw",
-          type: "PUT",
-          headers: headers_payload,
-          data : JSON.stringify(payload),
-          success: function (data, textStatus, jqXHR) {
-            $(".admins_"+id).text("observer")
-            $(".admin_"+id).text("observer")
-            $(".observer_"+id).text("observer")
-            $(".user_"+id).text("observer")
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        }); 
-  
-      });
-  
-      $("body").on("click", ".user", function (e) {
-        create_token();
-  
-        id = this.id
-  
-        var payload = {
-          id : id,
-          role: 'user',
-        }
-        console.log(payload)
-  
-        headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'}
-  
-        $.ajax({
-          url: "/user_veiw",
-          type: "PUT",
-          headers: headers_payload,
-          data : JSON.stringify(payload),
-          success: function (data, textStatus, jqXHR) {
-            $(".admins_"+id).text("user")
-            $(".admin_"+id).text("user")
-            $(".observer_"+id).text("user")
-            $(".user_"+id).text("user")
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown);
-          },
-        }); 
-  
-      });
-  
-  
+    }
+
+
+  });
+
+  $("body").on("click", ".delete_user", function (e) {
+    create_token();
+
+    id = this.id
+
+    var payload = {
+      id: id,
+    }
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' }
+    $.ajax({
+      url: "/user_veiw",
+      type: "DELETE",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        $(".user_row_" + id).hide()
+        $('#user_delete_modal').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+
+
+  $("body").on("click", ".super_admin", function (e) {
+    create_token();
+
+    id = this.id
+
+    var payload = {
+      id: id,
+      role: 'administrator',
+    }
+    //console.log(payload)
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' }
+
+    $.ajax({
+      url: "/user_veiw",
+      type: "PUT",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        $(".administrator_" + id).text("administrator")
+        $(".admin_" + id).text("administrator")
+        $(".observer_" + id).text("administrator")
+        $(".user_" + id).text("administrator")
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+
+  $("body").on("click", ".admin", function (e) {
+    create_token();
+
+    id = this.id
+
+    var payload = {
+      id: id,
+      role: 'admin',
+    }
+    console.log(payload)
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' }
+
+    $.ajax({
+      url: "/user_veiw",
+      type: "PUT",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        $(".administrator_" + id).text("admin")
+        $(".admin_" + id).text("admin")
+        $(".observer_" + id).text("admin")
+        $(".user_" + id).text("admin")
+
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+  $("body").on("click", ".observer", function (e) {
+    create_token();
+
+    id = this.id
+
+    var payload = {
+      id: id,
+      role: 'observer',
+    }
+    //console.log(payload)
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' }
+
+    $.ajax({
+      url: "/user_veiw",
+      type: "PUT",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        $(".administrator_" + id).text("observer")
+        $(".admin_" + id).text("observer")
+        $(".observer_" + id).text("observer")
+        $(".user_" + id).text("observer")
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+  $("body").on("click", ".user", function (e) {
+    create_token();
+
+    id = this.id
+
+    var payload = {
+      id: id,
+      role: 'user',
+    }
+    console.log(payload)
+
+    headers_payload = { 'Authorization': 'Bearer ' + y, 'Content-type': 'application/json' }
+
+    $.ajax({
+      url: "/user_veiw",
+      type: "PUT",
+      headers: headers_payload,
+      data: JSON.stringify(payload),
+      success: function (data, textStatus, jqXHR) {
+        $(".administrator_" + id).text("user")
+        $(".admin_" + id).text("user")
+        $(".observer_" + id).text("user")
+        $(".user_" + id).text("user")
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown);
+      },
+    });
+
+  });
+
+
   })
-  
-    </script>
-  
+
+</script>

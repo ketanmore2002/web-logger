@@ -3,17 +3,56 @@ from import_export.admin import ImportExportModelAdmin
 from .models import *
 # Register your models here.
 
-# admin.site.register(nodes_model)
-# admin.site.register(user_theme)
+
+
+
+
 
 
 @admin.register(nodes_model)
 class PersonAdmin(ImportExportModelAdmin):
     pass
 
-@admin.register(post_nodes)
+
+# admin.site.register(voltage_temp)
+# admin.site.register(current_temp)
+# admin.site.register(power_temp)
+# admin.site.register(generator_speed_temp)
+# admin.site.register(windspeed_temp)
+
+# admin.site.register(voltage_parameters)
+# admin.site.register(current_parameters)
+# admin.site.register(power_parameters)
+# admin.site.register(generator_speed_parameters)
+# admin.site.register(windspeed_parameters)
+# admin.site.register(battery_parameters)
+# admin.site.register(node_health)
+
+# admin.site.register(current_model)
+
+# admin.site.register(deleted_nodes)
+
+
+@admin.register(voltage_model)
 class PersonAdmin(ImportExportModelAdmin):
     pass
+
+@admin.register(current_model)
+class PersonAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(power_model)
+class PersonAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(generator_speed_model)
+class PersonAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(windspeed_model)
+class PersonAdmin(ImportExportModelAdmin):
+    pass
+
 
 
 
@@ -23,5 +62,5 @@ import django.contrib.auth.admin
 import django.contrib.auth.models
 from django.contrib import auth
 
-admin.site.unregister(auth.models.User)
-admin.site.unregister(auth.models.Group)
+# admin.site.unregister(auth.models.User)
+# admin.site.unregister(auth.models.Group)

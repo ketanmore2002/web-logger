@@ -28,21 +28,28 @@ tr:nth-child(even) {
 
 <table>
   <tr>
-    <th>Temperature</th>
-    <th>CO2</th>
-    <th>Humidity</th>
+    <th>current</th>
+    <th>power</th>
+    <th>voltage</th>
+    <th>generator speed</th>
+    <th>WindSpeed</th>
     <th>Time</th>
+    <th>Date</th>
   </tr>
-  {% for i  in pri %}
+  {% for item in data %}
+  {% with c=item.0 v=item.1 p=item.2 g=item.3 w=item.4 %}
   <tr>
-    <td>{{i.current}}</td>
-    <td>{{i.voltage}}</td>
-    <td>{{i.power}}</td>
-    <td>{{i.time}}</td>
+    <td>{{c}}</td>
+    <td>{{p}}</td>
+    <td>{{p}}</td>
+    <td>{{g}}</td>
+    <td>{{w}}</td>
+    {% comment %} <td>{{i.time}}</td>
+    <td>{{i.date}}</td> {% endcomment %}
   </tr>
+  {% endwith %}
   {% endfor %}
 </table>
-
 </body>
 </html>
 

@@ -13,9 +13,27 @@ class NodeSerializer(serializers.ModelSerializer):
 
 
 
-class PostNodeSerializer(serializers.ModelSerializer):
-
+class voltageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = post_nodes
-        fields = ('id','humidity','tempreture','battery','user_name','uuid',"CO2",'updated_at')
-        # fields = '__all__' 
+        model = voltage_parameters
+        fields = '__all__' 
+
+class currentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = current_parameters
+        fields = '__all__' 
+
+class powerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = power_parameters
+        fields = '__all__' 
+
+class generator_speedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = generator_speed_parameters
+        fields = '__all__' 
+
+class windspeedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = windspeed_parameters
+        fields = '__all__' 

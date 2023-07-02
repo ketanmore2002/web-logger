@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 #SECURE_SSL_REDIRECT = True
 
 # Application definition
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -93,6 +94,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'web@2023',
+#         'HOST': 'localhost',
+#         'PORT': '5432'
+#     }
+# }
 
 
 # Password validation
@@ -214,9 +226,9 @@ SIMPLE_JWT = {
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOW_CREDENTIALS = False
 CORS_ORIGIN_WHITELIST = [
-  'https://6d91-45-124-51-28.ngrok-free.app',
+  'https://4cea-2401-4900-1c17-7c22-211b-2129-fd9f-c154.ngrok-free.app',
 ]
-CSRF_TRUSTED_ORIGINS = ["https://6d91-45-124-51-28.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ["https://4cea-2401-4900-1c17-7c22-211b-2129-fd9f-c154.ngrok-free.app"]
 
 
 EMAIL_USE_TLS = True
