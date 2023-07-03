@@ -338,11 +338,11 @@
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Voltage</p>
-                    {% for j in voltage %}
-                    {% if i.uuid == j.uuid and i.uuid == k.uuid %}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="voltage-{{j.uuid}}" >{{j.voltage}}</a> V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                    {% endif %}
-                    {% endfor %}
+                    {% comment %} {% for j in voltage %} {% endcomment %}
+                    {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid %} {% endcomment %}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="voltage-{{k.uuid}}" >{{k.voltage}}</a> V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% comment %} {% endif %} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                   </div>
                   {% endif %}
                   {% endfor %}
@@ -351,11 +351,11 @@
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Current</p>
-                    {% for j in current %}
-                    {% if i.uuid == j.uuid and i.uuid == k.uuid%}
-                    <h5 class="font-weight-bold textColor mb-1"> <a id="current-{{j.uuid}}" >{{j.current}}</a>  A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                    {% endif %}
-                    {% endfor %}
+                    {% comment %} {% for j in current %} {% endcomment %}
+                    {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
+                    <h5 class="font-weight-bold textColor mb-1"> <a id="current-{{k.uuid}}" >{{k.current}}</a>  A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% comment %} {% endif %} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                   </div>
                   {% endif %}
                   {% endfor %}
@@ -365,11 +365,11 @@
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Power</p>
-                    {% for j in power %}
-                    {% if i.uuid == j.uuid and i.uuid == k.uuid%}
-                    <h5 class="font-weight-bold textColor mb-1"> <a id="power-{{i.uuid}}" > {{j.power}} </a>  W &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
-                    {% endif %}
-                    {% endfor %}
+                    {% comment %} {% for j in power %} {% endcomment %}
+                    {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
+                    <h5 class="font-weight-bold textColor mb-1"> <a id="power-{{k.uuid}}" > {{k.power}} </a>  W &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    {% comment %} {% endif %} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                   </div>
                   {% endif %}
                   {% endfor %}
@@ -378,11 +378,12 @@
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Generator Speed</p>
-                    {% for j in generator_speed %}{% if i.uuid == j.uuid and i.uuid == k.uuid%}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="generator_speed-{{j.uuid}}" > {{j.generator_speed}} </a>
+                    {% comment %} {% for j in generator_speed %} {% endcomment %}
+                    {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="generator_speed-{{k.uuid}}" > {{k.generator_speed}} </a>
                       RPM&nbsp;&nbsp;</h5>
-                    {% endif %}
-                    {% endfor %}
+                    {% comment %} {% endif %} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                   </div>
                   {% endif %}
                   {% endfor %}
@@ -391,10 +392,11 @@
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">WindSpeed</p>
-                    {% for j in windspeed %}{% if i.uuid == j.uuid and i.uuid == k.uuid%}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{j.uuid}}" > {{j.windspeed}} </a> </h5>
-                    {% endif %}
-                    {% endfor %}
+                    {% comment %} {% for j in windspeed %} {% endcomment %}
+                    {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{k.uuid}}" > {{k.windspeed}}</a>KMPH</h5>
+                    {% comment %} {% endif %} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                   </div>
                   {% endif %}
                   {% endfor %}
@@ -403,7 +405,7 @@
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Battery</p>
                     <h5 class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}} </a>
-                      %&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                      %&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                   </div>
               </div>
 

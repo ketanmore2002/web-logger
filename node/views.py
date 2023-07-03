@@ -342,7 +342,7 @@ class update_single_node (GroupRequiredMixin,APIView):
             windspeed_temp.objects.filter(uuid = dict_data["uuid"]).delete()
 
 
-        node = nodes_model.objects.filter(_uuid=dict_data["uuid"]).update(machine=dict_data["machine"] , location =dict_data["location"], sub_location = dict_data["sub_location"] , _user_name= request.user.username, _uuid=dict_data["uuid"] , email=dict_data["email"] )
+        node = nodes_model.objects.filter(_uuid=dict_data["uuid"]).update(machine=dict_data["machine"] , location =dict_data["location"], sub_location = dict_data["sub_location"] , user_name= request.user.username, _uuid=dict_data["uuid"] , email=dict_data["email"] )
         return HttpResponse("done")
     
 
