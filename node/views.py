@@ -211,6 +211,7 @@ class manage_deleted_node(GroupRequiredMixin,APIView):
     def post(self, request):
         nodes_model.objects.filter(id = request.data["node_id"]).update(user_name = request.data["user_name"] , _delete_status = "Restore")
         deleted_nodes.objects.filter(node_id = request.data["node_id"]).delete()
+        task.objects.create(status="incomplete")
         return HttpResponse("Done !")
     
     def delete (self , request) :
@@ -238,6 +239,8 @@ class manage_deleted_node(GroupRequiredMixin,APIView):
 
         battery_parameters.objects.filter(uuid=uuid.uuid).delete()
         node_health.objects.filter(uuid=uuid.uuid).delete()
+
+        task.objects.create(status="incomplete")
 
         return HttpResponse("Done !")
 
@@ -465,6 +468,19 @@ class check_deleted_nodes(GroupRequiredMixin,APIView):
         data = nodes_model.objects.filter(_delete_status="deleted")
         qs_json = ser.serialize('json', data)
         return HttpResponse(qs_json, content_type='application/json')
+
+class task_data(GroupRequiredMixin,APIView):
+    permission_classes = (IsAuthenticated, )
+    group_required = ["user","observer","admin","administrator"]
+    def get(self, request):
+        if task.objects.filter(status="incomplete").exists():
+            # data = task.objects.filter(status="incomplete")
+            # qs_json = ser.serialize('json', data)
+            # return HttpResponse(qs_json, content_type='application/json')
+            task.objects.filter(status="incomplete").update(status="complete")
+            return HttpResponse("incomplete")
+        else:
+            return HttpResponse("complete")
 
 
 

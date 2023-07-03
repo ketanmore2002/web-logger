@@ -390,7 +390,7 @@
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">WindSpeed</p>
                     {% comment %} {% for j in windspeed %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{k.uuid}}" > {{k.windspeed}}</a>KMPH</h5>
+                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{k.uuid}}" > {{k.windspeed}}</a>&nbsp;KMPH</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -400,7 +400,7 @@
 
                   <div class="w-100 d-flex align-items-center justify-content-between ">
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Battery</p>
-                    <h5 class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}} </a>
+                    <h5 class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}}</a>
                       %&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                   </div>
               </div>
@@ -640,25 +640,43 @@
                     <td>{{i.first_name}} {{i.last_name}}</td>
                     <td>{{i.username}}</td>
                     <td class="{{ i.groups.all.0 }}_{{i.id}}">{{ i.groups.all.0 }}</td>
+                    {% if i.groups.all.0.name != 'administrator' %}
                     <td>
-                      <div class=" btn-group">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
-                          aria-haspopup="true" aria-expanded="false">
-                          Roles
-                        </button>
-                        <div class="mask dropdown-menu">
-                          {% for group in user.groups.all %}
-                          {% if group.name == 'administrator'%}
-                          <a class="mask dropdown-item super_admin" id="{{i.id}}">administrator</a>
-                          <a class="mask dropdown-item admin" id="{{i.id}}">admin</a>
-                          {% endif %}
-                          {% endfor %}
-                          <a class="mask dropdown-item observer" id="{{i.id}}">observer</a>
-                          <a class="mask dropdown-item user" id="{{i.id}}">user</a>
+                        <div class=" btn-group">
+                          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Roles
+                          </button>
+                          <div class="mask dropdown-menu">
+                            {% for group in user.groups.all %}
+                            {% if group.name == 'administrator'%}
+                            <a class="mask dropdown-item super_admin" id="{{i.id}}">administrator</a>
+                            <a class="mask dropdown-item admin" id="{{i.id}}">admin</a>
+                            {% endif %}
+                            {% endfor %}
+                            <a class="mask dropdown-item observer" id="{{i.id}}">observer</a>
+                            <a class="mask dropdown-item user" id="{{i.id}}">user</a>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td><button type="button" class="btn btn-danger delete_user" id="{{i.id}}">Delete</button></td>
+                      </td>
+                        {% else %}
+                     <td>NA</td>
+                      {% endif %}
+
+                      {% for group in user.groups.all %}
+                      {% if group.name == 'administrator' %}
+                          <td><button type="button" class="btn btn-danger delete_user" id="{{ i.id }}">Delete</button></td>
+
+                      {% elif group.name == 'admin' %}
+                          {% if i.groups.all.0.name == 'administrator' or i.groups.all.0.name == 'admin' %}
+                              <td>NA</td>
+                          {% elif i.groups.all.0.name == 'user' or i.groups.all.0.name == 'observer' %}
+                              <td><button type="button" class="btn btn-danger delete_user" id="{{ i.id }}">Delete</button></td>
+                          {% endif %}
+                      {% endif %}
+                  {% endfor %}
+                  
+
                   </tr>
                   {% endfor %}
                 </tbody>

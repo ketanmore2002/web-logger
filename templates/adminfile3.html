@@ -590,7 +590,7 @@
       success: function (result) {
         //console.log(result)  
         for (let i = 0; i < result.length; i++) {
-          console.log(result[i]["fields"]["uuid"]);
+          //console.log(result[i]["fields"]["uuid"]);
           $("#battery-" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["battery"])
         };
       }
@@ -712,6 +712,24 @@
     });
   };
   setInterval(check_deleted_nodes, 2000);
+
+  function task_data() {
+    //create_token();
+    //headers_payload = {'Authorization': 'Bearer ' + y,'Content-type':'application/json'};
+    $.ajax({
+      url: "/task_data/",
+      data: {},
+      //headers: headers_payload,
+      type: "GET",
+      contentType: "application/json",
+      success: function (result) {
+       if(result == "incomplete"){
+        location.reload(true);
+       }
+      }
+    });
+  };
+  setInterval(task_data, 2000);
 
   //---------------------------------------------------------------------------------------------------------------------
 

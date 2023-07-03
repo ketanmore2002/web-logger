@@ -139,6 +139,9 @@ class battery_parameters(models.Model):
     battery = models.CharField(max_length=300,blank=True,null=True)
 
 
+class task(models.Model):
+    status =  models.CharField(max_length=300,blank=True,null=True ,default="incomplete")
+
 class deleted_nodes(models.Model):
     uuid = models.CharField(max_length=300,blank=True,null=True)
     node_id = models.CharField(max_length=300,blank=True,null=True)

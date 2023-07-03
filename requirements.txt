@@ -26,7 +26,6 @@ et-xmlfile==1.1.0
 html5lib==1.1
 httpie==3.2.1
 idna==3.4
-labelImg==1.7.0
 lxml==4.9.2
 MarkupPy==1.14
 multidict==6.0.4
