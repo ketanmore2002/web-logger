@@ -19,7 +19,7 @@ class nodes_model(models.Model):
     time = fields.EncryptedCharField(max_length=300,blank=True,null=True)
     date = fields.EncryptedCharField(max_length=300,blank=True,null=True)
     email = fields.EncryptedCharField(max_length=300,blank=True,null=True)
-    activate = fields.EncryptedCharField(max_length=300,blank=True,null=True ,default = "False")
+    # activate = fields.EncryptedCharField(max_length=300,blank=True,null=True ,default = "False")
     
 
 

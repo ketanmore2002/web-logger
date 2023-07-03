@@ -767,100 +767,100 @@ def create_node(request):
             topic = dict_data.get("topic")
             del dict_data['topic']
 
-            status = "healthy"
+            if nodes_model.objects.filter(_uuid = dict_data["uuid"]) :
 
-            # voltage_para = voltage_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-            # print(voltage_para.voltage_low)
-
-            try :
-                if voltage_parameters.objects.filter(uuid = dict_data["uuid"]).exists() :
-                    voltage_para = voltage_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-                    voltage_model.objects.create(uuid = dict_data["uuid"] , voltage = dict_data["voltage"])
-                    voltage_temp.objects.filter(uuid = dict_data["uuid"]).delete()
-                    voltage_temp.objects.create(uuid = dict_data["uuid"] , voltage = dict_data["voltage"])
-                    if float(dict_data["voltage"]) < float(voltage_para.voltage_low ) or float(dict_data["voltage"]) > float(voltage_para.voltage_high ) :
-                        status = "unhealthy"
-                else:
+                status = "healthy"
+                try :
+                    if voltage_parameters.objects.filter(uuid = dict_data["uuid"]).exists() :
+                        voltage_para = voltage_parameters.objects.filter(uuid = dict_data["uuid"])[0]
+                        voltage_model.objects.create(uuid = dict_data["uuid"] , voltage = dict_data["voltage"])
+                        voltage_temp.objects.filter(uuid = dict_data["uuid"]).delete()
+                        voltage_temp.objects.create(uuid = dict_data["uuid"] , voltage = dict_data["voltage"])
+                        if float(dict_data["voltage"]) < float(voltage_para.voltage_low ) or float(dict_data["voltage"]) > float(voltage_para.voltage_high ) :
+                            status = "unhealthy"
+                    else:
+                        pass
+                except:
                     pass
-            except:
-                pass
             
 
-            try:
-                if current_parameters.objects.filter(uuid = dict_data["uuid"]).exists() :
-                    current_para = current_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-                    current_model.objects.create(uuid = dict_data["uuid"] , current = dict_data["current"])
-                    current_temp.objects.filter(uuid = dict_data["uuid"]).delete()
-                    current_temp.objects.create(uuid = dict_data["uuid"] , current = dict_data["current"])
-                    if float(dict_data["current"]) < float(current_para.current_low ) or float(dict_data["current"]) > float(current_para.current_high ) :
-                        status = "unhealthy"
+                try:
+                    if current_parameters.objects.filter(uuid = dict_data["uuid"]).exists() :
+                        current_para = current_parameters.objects.filter(uuid = dict_data["uuid"])[0]
+                        current_model.objects.create(uuid = dict_data["uuid"] , current = dict_data["current"])
+                        current_temp.objects.filter(uuid = dict_data["uuid"]).delete()
+                        current_temp.objects.create(uuid = dict_data["uuid"] , current = dict_data["current"])
+                        if float(dict_data["current"]) < float(current_para.current_low ) or float(dict_data["current"]) > float(current_para.current_high ) :
+                            status = "unhealthy"
+                    else:
+                        pass
+                except:
+                    pass
+
+
+                try:
+                    if power_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "power" in dict_data.keys() :
+                        power_para = power_parameters.objects.filter(uuid = dict_data["uuid"])[0]
+                        power_model.objects.create(uuid = dict_data["uuid"] , power = dict_data["power"])
+                        power_temp.objects.filter(uuid = dict_data["uuid"]).delete()
+                        power_temp.objects.create(uuid = dict_data["uuid"] , power = dict_data["power"])
+                        if float(dict_data["power"]) < float(power_para.power_low ) or float(dict_data["power"]) > float(power_para.power_high ) :
+                            status = "unhealthy"
+                    else:
+                        pass
+                except:
+                    pass
+
+
+                try:
+                    if generator_speed_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "generator_speed" in dict_data.keys() :
+                        generator_speed_para = generator_speed_parameters.objects.filter(uuid = dict_data["uuid"])[0]
+                        generator_speed_model.objects.create(uuid = dict_data["uuid"] , generator_speed = dict_data["generator_speed"])
+                        generator_speed_temp.objects.filter(uuid = dict_data["uuid"]).delete()
+                        generator_speed_temp.objects.create(uuid = dict_data["uuid"] , generator_speed = dict_data["generator_speed"] )
+                        if float(dict_data["generator_speed"]) < float(generator_speed_para.generator_speed_low ) or float(dict_data["generator_speed"]) > float(generator_speed_para.generator_speed_high ) :
+                            status = "unhealthy"
+                    else :
+                        pass
+                except:
+                    pass
+
+
+                try :
+                    if windspeed_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "windspeed" in dict_data.keys() :
+                        windspeed_para = windspeed_parameters.objects.filter(uuid = dict_data["uuid"])[0]
+                        windspeed_model.objects.create(uuid = dict_data["uuid"] , windspeed = dict_data["windspeed"])
+                        windspeed_temp.objects.filter(uuid = dict_data["uuid"]).delete()
+                        windspeed_temp.objects.create(uuid = dict_data["uuid"] , windspeed = dict_data["windspeed"])
+                        if float(dict_data["windspeed"]) < float(windspeed_para.windspeed_low ) or float(dict_data["windspeed"]) > float(windspeed_para.windspeed_high ) :
+                            status = "unhealthy"
+                    else:
+                        pass
+                except:
+                    pass
+
+                battery_parameters.objects.filter(uuid = dict_data["uuid"]).delete()
+                battery_parameters.objects.create(uuid = dict_data["uuid"] ,  battery = dict_data["battery"])
+                nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(battery = dict_data["battery"])
+                time_stamp.objects.create()
+                # nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(time = dict_data["time"] , date = dict_data["date"] ,activate = "True")
+
+                if status == "unhealthy" :
+                    node_health.objects.filter(uuid = dict_data["uuid"]).delete()
+                    node_health.objects.create(uuid = dict_data["uuid"] , health = "Unhealthy")
+                    info = nodes_model.objects.filter(_uuid = dict_data["uuid"])[0]
+                    subject = 'Unhealthy Node'
+                    message = 'Hi ' + info.user_name +","+dict_data["uuid"]+ ' is unhealthy please check it '
+                    email_from = settings.EMAIL_HOST_USER
+                    recipient_list = (info.email).split(",")
+                    send_mail( subject, message, email_from, recipient_list )
+                    return HttpResponse("saved" , status = 201)
                 else:
-                    pass
-            except:
-                pass
-
-
-            try:
-                if power_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "power" in dict_data.keys() :
-                    power_para = power_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-                    power_model.objects.create(uuid = dict_data["uuid"] , power = dict_data["power"])
-                    power_temp.objects.filter(uuid = dict_data["uuid"]).delete()
-                    power_temp.objects.create(uuid = dict_data["uuid"] , power = dict_data["power"])
-                    if float(dict_data["power"]) < float(power_para.power_low ) or float(dict_data["power"]) > float(power_para.power_high ) :
-                        status = "unhealthy"
-                else:
-                    pass
-            except:
-                pass
-
-
-            try:
-                if generator_speed_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "generator_speed" in dict_data.keys() :
-                    generator_speed_para = generator_speed_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-                    generator_speed_model.objects.create(uuid = dict_data["uuid"] , generator_speed = dict_data["generator_speed"])
-                    generator_speed_temp.objects.filter(uuid = dict_data["uuid"]).delete()
-                    generator_speed_temp.objects.create(uuid = dict_data["uuid"] , generator_speed = dict_data["generator_speed"] )
-                    if float(dict_data["generator_speed"]) < float(generator_speed_para.generator_speed_low ) or float(dict_data["generator_speed"]) > float(generator_speed_para.generator_speed_high ) :
-                        status = "unhealthy"
-                else :
-                    pass
-            except:
-                pass
-
-
-            try :
-                if windspeed_parameters.objects.filter(uuid = dict_data["uuid"]).exists() and "windspeed" in dict_data.keys() :
-                    windspeed_para = windspeed_parameters.objects.filter(uuid = dict_data["uuid"])[0]
-                    windspeed_model.objects.create(uuid = dict_data["uuid"] , windspeed = dict_data["windspeed"])
-                    windspeed_temp.objects.filter(uuid = dict_data["uuid"]).delete()
-                    windspeed_temp.objects.create(uuid = dict_data["uuid"] , windspeed = dict_data["windspeed"])
-                    if float(dict_data["windspeed"]) < float(windspeed_para.windspeed_low ) or float(dict_data["windspeed"]) > float(windspeed_para.windspeed_high ) :
-                        status = "unhealthy"
-                else:
-                    pass
-            except:
-                pass
-
-            battery_parameters.objects.filter(uuid = dict_data["uuid"]).delete()
-            battery_parameters.objects.create(uuid = dict_data["uuid"] ,  battery = dict_data["battery"])
-            nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(battery = dict_data["battery"])
-            time_stamp.objects.create()
-            nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(time = dict_data["time"] , date = dict_data["date"] ,activate = "True")
-
-            if status == "unhealthy" :
-                node_health.objects.filter(uuid = dict_data["uuid"]).delete()
-                node_health.objects.create(uuid = dict_data["uuid"] , health = "Unhealthy")
-                info = nodes_model.objects.filter(_uuid = dict_data["uuid"])[0]
-                subject = 'Unhealthy Node'
-                message = 'Hi ' + info.user_name +","+dict_data["uuid"]+ ' is unhealthy please check it '
-                email_from = settings.EMAIL_HOST_USER
-                recipient_list = (info.email).split(",")
-                send_mail( subject, message, email_from, recipient_list )
-                return HttpResponse("saved" , status = 201)
-            else:
-                node_health.objects.filter(uuid = dict_data["uuid"]).delete()
-                node_health.objects.create(uuid = dict_data["uuid"] , health = "Healthy")
-                return HttpResponse("saved" , status = 201)
+                    node_health.objects.filter(uuid = dict_data["uuid"]).delete()
+                    node_health.objects.create(uuid = dict_data["uuid"] , health = "Healthy")
+                    return HttpResponse("saved" , status = 201)
+                
+            else:return HttpResponse("Node with uuid does not exists",status=404)
 
     except:
         return HttpResponse("This error is caused by following reasons : 1) Wrong user name or node uid 2) Blank post request  3) String Values Provide in the json format" , status = 404)
