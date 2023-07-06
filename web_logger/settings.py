@@ -260,6 +260,18 @@ MQTT_PASSWORD = 'admin'
 
 
 
+# settings.py
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        # 'TIMEOUT': 3600,  # Cache expiration time in seconds (1 hour)
+    }
+}
+
+
+
+# SESSION_COOKIE_AGE = timedelta(seconds=7).total_seconds()
+
 # from django.apps import AppConfig
 
 # AppConfig.default = False

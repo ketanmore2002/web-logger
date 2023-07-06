@@ -204,14 +204,16 @@ class user_veiw(GroupRequiredMixin,APIView):
         my_group.user_set.add(user)
         return HttpResponse("role updated !")
 
-
+from django.core.cache import cache
 class manage_deleted_node(GroupRequiredMixin,APIView):
     permission_classes = (IsAuthenticated, )
     group_required = ["administrator" , "admin" , "user"]
     def post(self, request):
         nodes_model.objects.filter(id = request.data["node_id"]).update(user_name = request.data["user_name"] , _delete_status = "Restore")
         deleted_nodes.objects.filter(node_id = request.data["node_id"]).delete()
-        task.objects.create(status="incomplete")
+        # task.objects.create(status="incomplete")
+        cache.set("node", "incomplete",timeout=3)
+
         return HttpResponse("Done !")
     
     def delete (self , request) :
@@ -240,7 +242,8 @@ class manage_deleted_node(GroupRequiredMixin,APIView):
         battery_parameters.objects.filter(uuid=uuid.uuid).delete()
         node_health.objects.filter(uuid=uuid.uuid).delete()
 
-        task.objects.create(status="incomplete")
+        # task.objects.create(status="incomplete")
+        cache.set("node", "incomplete",timeout=7)
 
         return HttpResponse("Done !")
 
@@ -469,19 +472,28 @@ class check_deleted_nodes(GroupRequiredMixin,APIView):
         qs_json = ser.serialize('json', data)
         return HttpResponse(qs_json, content_type='application/json')
 
+# class task_data(GroupRequiredMixin,APIView):
+#     permission_classes = (IsAuthenticated, )
+#     group_required = ["user","observer","admin","administrator"]
+#     def get(self, request):
+#         if task.objects.filter(status="incomplete").exists():
+#             # data = task.objects.filter(status="incomplete")
+#             # qs_json = ser.serialize('json', data)
+#             # return HttpResponse(qs_json, content_type='application/json')
+#             task.objects.filter(status="incomplete").update(status="complete")
+#             return HttpResponse("incomplete")
+#         else:
+#             return HttpResponse("complete")
+
+
 class task_data(GroupRequiredMixin,APIView):
     permission_classes = (IsAuthenticated, )
     group_required = ["user","observer","admin","administrator"]
     def get(self, request):
-        if task.objects.filter(status="incomplete").exists():
-            # data = task.objects.filter(status="incomplete")
-            # qs_json = ser.serialize('json', data)
-            # return HttpResponse(qs_json, content_type='application/json')
-            task.objects.filter(status="incomplete").update(status="complete")
+        if cache.get('node'):
             return HttpResponse("incomplete")
         else:
             return HttpResponse("complete")
-
 
 
 from datetime import datetime, timedelta

@@ -1,18 +1,47 @@
 <script>
   $(document).ready(function () {
     jQuery.noConflict();
-    $('#password_modal').modal('show');
+    //$('#password_modal').modal('show');
     //=================================================
 
-   
+
+    function checkPassword() {
+      var password = localStorage.getItem('password');
+      
+      if (!password) {
+        
+        $('#password_modal').modal('show');
+                
+        var form = document.getElementById('pass-btn');
+        form.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          var passwordInput = document.getElementById('password').value;
+          
+          localStorage.setItem('password', passwordInput);
+
+        
+          $('#password_modal').modal('hide');
+        });
+      }
+    };
     
+    checkPassword();    
+
+
+    var log = document.getElementById('logout-btn');
+    log.addEventListener('click', function(e) {
+          e.preventDefault();
+          localStorage.clear();
+          window.location.replace("/logout");
+        });
   //==================================================
   var y;
   function create_token() {
 
     var payload = {
       "username": "{{request.user.username}}",
-      "password": $('#password').val()
+      "password": localStorage.getItem('password')
     };
 
     $.ajax({

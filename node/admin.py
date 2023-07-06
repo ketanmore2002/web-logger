@@ -30,7 +30,7 @@ class PersonAdmin(ImportExportModelAdmin):
 
 # admin.site.register(current_model)
 
-admin.site.register(task)
+# admin.site.register(task)
 
 
 @admin.register(voltage_model)
