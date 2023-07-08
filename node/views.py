@@ -137,6 +137,8 @@ class post_data_nodes_1(GroupRequiredMixin,APIView):
 
             node = nodes_model.objects.create(machine=dict_data["machine"] , location = dict_data["location"] , sub_location = dict_data["sub_location"] , user_name=dict_data["user_name"], _uuid=dict_data["uuid"] , email=dict_data["email"] )
             
+            cache.set("node", "incomplete",timeout=2)
+            
             return Response(status=status.HTTP_201_CREATED)
         # return redirect ("/")
 
@@ -170,6 +172,8 @@ def post_data_nodes(request):
             node = nodes_model.objects.create(machine=dict_data["machine"] , location =dict_data["location"], sub_location = dict_data["sub_location"] , _user_name= request.user.username, _uuid=dict_data["uuid"] , email=dict_data["email"] )
             
             # return Response(status=status.HTTP_201_CREATED)
+            cache.set("node", "incomplete",timeout=2)
+
             return redirect ("/")
 
 
@@ -243,7 +247,7 @@ class manage_deleted_node(GroupRequiredMixin,APIView):
         node_health.objects.filter(uuid=uuid.uuid).delete()
 
         # task.objects.create(status="incomplete")
-        cache.set("node", "incomplete",timeout=7)
+        cache.set("node", "incomplete",timeout=2)
 
         return HttpResponse("Done !")
 
@@ -291,7 +295,7 @@ class update_single_node (GroupRequiredMixin,APIView):
     def put(self, request, pk):
 
         dict_data = request.data
-        print(dict_data)
+        # print(dict_data)
 
         if  dict_data["voltage_low_value"] == "present" and dict_data["voltage_high_value"] == "present":
             if voltage_parameters.objects.filter(uuid = dict_data["uuid"]).exists() :
@@ -349,7 +353,11 @@ class update_single_node (GroupRequiredMixin,APIView):
 
 
         node = nodes_model.objects.filter(_uuid=dict_data["uuid"]).update(machine=dict_data["machine"] , location =dict_data["location"], sub_location = dict_data["sub_location"] , user_name= request.user.username, _uuid=dict_data["uuid"] , email=dict_data["email"] )
+    
+        cache.set("node", "incomplete",timeout=2)
+    
         return HttpResponse("done")
+    
     
 
 

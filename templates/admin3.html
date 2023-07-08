@@ -665,8 +665,11 @@
 
                       {% for group in user.groups.all %}
                       {% if group.name == 'administrator' %}
-                          <td><button type="button" class="btn btn-danger delete_user" id="{{ i.id }}">Delete</button></td>
-
+                      {% if i.groups.all.0.name == 'administrator' %}
+                         <td>NA</td>
+                      {% else %}
+                      <td><button type="button" class="btn btn-danger delete_user" id="{{ i.id }}">Delete</button></td>
+                      {% endif %}
                       {% elif group.name == 'admin' %}
                           {% if i.groups.all.0.name == 'administrator' or i.groups.all.0.name == 'admin' %}
                               <td>NA</td>
