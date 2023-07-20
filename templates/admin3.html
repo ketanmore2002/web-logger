@@ -103,11 +103,11 @@
         margin: 0;
         padding: 0;
         page-break-inside: avoid;
+        /* margin-right: 20px; */
       }
 
       @page {
-        /* Adjust margins and page size for printing */
-        margin: 1cm;
+        margin: 0.2cm;
       }
 
       #accordionSidebar{
@@ -575,7 +575,7 @@
                   </div>
                   <hr>
                   <div class="chart-area" id="graph_div">
-                    <canvas id="myAreaChart"></canvas>
+                    {% comment %} <canvas id="myAreaChart"></canvas> {% endcomment %}
                   </div>
                   <hr>
                   {% comment %} <div class="row mx-4 my-3">

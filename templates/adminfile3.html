@@ -661,7 +661,7 @@
       success: function (result) {
         //console.log(result)  
         for (let i = 0; i < result.length; i++) {
-          //console.log(result[i]["fields"]["uuid"]);
+          //console.log(result[i]["fields"]);
           $("#time" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["date"] + " @ " + result[i]["fields"]["time"])
         };
       }
@@ -976,11 +976,11 @@
 
           $('#table-report').empty();
           $("#myAreaChart").remove()
-          $("#graph_div").append(`<canvas id="myAreaChart"></canvas>`)
+          $("#graph_div").append(`<canvas class="m-3" id="myAreaChart"></canvas>`)
 
           graph(label, data1, data2, data3, data4, data5);
 
-          uuid = $("#uuid_graph").val(),
+            uuid = $("#uuid_graph").val(),
             start_time = $("#start_time").val(),
             end_time = $("#end_time").val(),
             start_date = $("#start_date").val(),

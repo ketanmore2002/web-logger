@@ -531,9 +531,9 @@ class graph(GroupRequiredMixin,APIView):
         windspeed = [None] * (max_length - len(windspeed)) + windspeed
 
         if request.data["start_date"] == request.data["end_date"] :
-            labels = list(time_stamp.objects.filter(date__range=(request.data["start_date"], request.data["end_date"]) , time__range = (x,y)).values_list('time', flat=True))
+            labels = list(time_stamp.objects.filter(date__range=(request.data["start_date"], request.data["end_date"]) , time__range = (x,y)).values_list('time_rig', flat=True))
         else:
-            labels = list(time_stamp.objects.filter(date__range=(request.data["start_date"], request.data["end_date"]) , time__range = (x,y)).values_list('date', flat=True))
+            labels = list(time_stamp.objects.filter(date__range=(request.data["start_date"], request.data["end_date"]) , time__range = (x,y)).values_list('date_rig', flat=True))
 
         data = {
                     'current': current,
@@ -728,7 +728,7 @@ class GenerateInvoice(GroupRequiredMixin, APIView):
         return render(request, "tables.html", {"data": combined_data , "uuid" : uuid , "start_time" : start_time , "end_time" : end_time , "start_date" : start_date , "end_date" : end_date})
 
 import paho.mqtt.client as mqtt
-
+import paho.mqtt.publish as mqtt_publish
 
 def on_connect(mqtt_client, userdata, flags, rc):
    if rc == 0:
@@ -743,25 +743,9 @@ def on_message(mqtt_client, userdata, msg):
         tempx = msg.payload
         dict_str = tempx.decode("UTF-8")
         dict_data = ast.literal_eval(dict_str)
-        # print(f'Received message on topic: {msg.topic} with payload: {dict_data}')
         rc, mid = client.publish("django/mqtt",str(dict_data))
-        data = post_nodes.objects.create(**dict_data)
-        # print("done!")
-        nodes_model.objects.filter(_uuid = data.uuid , _user_name=data.user_name).update(current=data.current , voltage = data.voltage , power = data.power , date = data.date , time = data.time , battery = data.battery , lpm = data.lpm)
-        node = nodes_model.objects.filter(_uuid = data.uuid , _user_name=data.user_name)[0]
-        if int(node.current) > int(node.current_high) or int(node.current) < int(node.current_low) or int(node.power) > int(node.power_high) or int(node.power) < int(node.power_low) or int(node.voltage) > int(node.voltage_high) or int(node.voltage) < int(node.voltage_low) or int(node.lpm) > int(node.lpm_high) or int(node.lpm) < int(node.lpm_low)  :
-            data.faulty = "True"
-            data.save()
-            subject = 'Unhealthy Node'
-            message = 'Hi ' + node.user_name +","+node.uuid+ ' is unhealthy please check it '
-            email_from = settings.EMAIL_HOST_USER
-            recipient_list = (node.email).split(",")
-            send_mail( subject, message, email_from, recipient_list )
-            return HttpResponse("Saved !")
-        else:
-            return HttpResponse("500")
-    else:
-        pass
+        # mqtt_publish.single("django/mqtt", payload=dict_data, hostname="broker.emqx.io")
+   
 
 
 MQTT_SERVER = 'broker.emqx.io'
@@ -803,7 +787,7 @@ def create_node(request):
             topic = dict_data.get("topic")
             del dict_data['topic']
 
-            if nodes_model.objects.filter(_uuid = dict_data["uuid"]) :
+            if nodes_model.objects.filter(_uuid = dict_data["uuid"]).exists() and nodes_model.objects.filter(_uuid = dict_data["uuid"], _delete_status = "Restore") :
 
                 status = "healthy"
                 try :
@@ -878,8 +862,8 @@ def create_node(request):
                 battery_parameters.objects.filter(uuid = dict_data["uuid"]).delete()
                 battery_parameters.objects.create(uuid = dict_data["uuid"] ,  battery = dict_data["battery"])
                 nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(battery = dict_data["battery"])
-                time_stamp.objects.create()
-                # nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(time = dict_data["time"] , date = dict_data["date"] ,activate = "True")
+                time_stamp.objects.create(time_rig = dict_data["time"] , date_rig = dict_data["date"])
+                nodes_model.objects.filter(_uuid = dict_data["uuid"]).update(time = dict_data["time"] , date = dict_data["date"])
 
                 if status == "unhealthy" :
                     node_health.objects.filter(uuid = dict_data["uuid"]).delete()

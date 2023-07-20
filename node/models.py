@@ -16,8 +16,8 @@ class nodes_model(models.Model):
     # _delete_status = fields.SearchField(hash_key="8222a7fd4b33e333fd5cfcd2b2c03473515a397855ded9b674bb2779110d8736", encrypted_field_name="delete_status", blank=True,null=True)
     uuid =  fields.EncryptedCharField(max_length=300,blank=True,null=True)
     _uuid = fields.SearchField(hash_key="8222a7fd4b33e333fd5cfcd2b2c03473515a397855ded9b674bb2779110d8736", encrypted_field_name="uuid",blank=True,null=True)
-    time = fields.EncryptedCharField(max_length=300,blank=True,null=True)
-    date = fields.EncryptedCharField(max_length=300,blank=True,null=True)
+    time = models.CharField(max_length=300,blank=True,null=True)
+    date = models.CharField(max_length=300,blank=True,null=True)
     email = fields.EncryptedCharField(max_length=300,blank=True,null=True)
     # activate = fields.EncryptedCharField(max_length=300,blank=True,null=True ,default = "False")
     
@@ -129,7 +129,8 @@ class time_stamp(models.Model):
     date_time = models.DateTimeField(auto_now=True)
     date = models.DateField(auto_now=True,blank=True,null=True)
     time = models.TimeField(auto_now=True,blank=True,null=True)
-
+    time_rig = models.CharField(max_length=300,blank=True,null=True)
+    date_rig = models.CharField(max_length=300,blank=True,null=True)
 
 
 
