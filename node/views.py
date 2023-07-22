@@ -733,13 +733,13 @@ import paho.mqtt.publish as mqtt_publish
 def on_connect(mqtt_client, userdata, flags, rc):
    if rc == 0:
        print('Connected successfully')
-    #    mqtt_client.subscribe('send_data')
+       mqtt_client.subscribe('send_data')
    else:
        print('Bad connection. Code:', rc)
 
 import ast
 def on_message(mqtt_client, userdata, msg):
-    if msg.topic == "send_data":
+    if msg.topic == "django/mqtt":
         tempx = msg.payload
         dict_str = tempx.decode("UTF-8")
         dict_data = ast.literal_eval(dict_str)
@@ -781,13 +781,16 @@ def publish_message(request):
 
 @csrf_exempt
 def create_node(request):
-    try :
+    # try :
         if request.method == 'POST':
             dict_data = json.loads(request.body.decode('UTF-8'))
             topic = dict_data.get("topic")
             del dict_data['topic']
 
             if nodes_model.objects.filter(_uuid = dict_data["uuid"]).exists() and nodes_model.objects.filter(_uuid = dict_data["uuid"], _delete_status = "Restore") :
+
+                rc, mid = client.publish('django/mqtt', str(dict_data))
+
 
                 status = "healthy"
                 try :
@@ -877,13 +880,13 @@ def create_node(request):
                     return HttpResponse("saved" , status = 201)
                 else:
                     node_health.objects.filter(uuid = dict_data["uuid"]).delete()
-                    node_health.objects.create(uuid = dict_data["uuid"] , health = "Healthy")
+                    node_health.objects.create(uuid = dict_data["uuid"] , health = "Healthy")                    
                     return HttpResponse("saved" , status = 201)
                 
             else:return HttpResponse("Node with uuid does not exists",status=404)
 
-    except:
-        return HttpResponse("This error is caused by following reasons : 1) Wrong user name or node uid 2) Blank post request  3) String Values Provide in the json format" , status = 404)
+    # except:
+    #     return HttpResponse("This error is caused by following reasons : 1) Wrong user name or node uid 2) Blank post request  3) String Values Provide in the json format" , status = 404)
 
 
 def glance (request):
