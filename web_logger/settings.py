@@ -276,8 +276,11 @@ CACHES = {
 
 # AppConfig.default = False
 
+# import socket
+# hostname = socket.gethostname()
+# ipv4_address = socket.gethostbyname(hostname)
 
 # from decouple import config
 # import django.core.management.commands.runserver as runserver
 
-# runserver.Command.default_port = config('WebServer_Port', default = "8088")
+# runserver.Command.default_port = config(str(ipv4_address), default = "8000")
