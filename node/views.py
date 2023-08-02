@@ -915,6 +915,9 @@ def glance (request):
 def version(request) :
     return HttpResponse("current version : 3.0")
 
+@csrf_exempt
+def server(request) :
+    return HttpResponse("server is running")
 
 
 
