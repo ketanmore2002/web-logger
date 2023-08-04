@@ -121,6 +121,8 @@ class node_health(models.Model):
     health = models.CharField(max_length=300,blank=True,null=True)
     date = models.DateField(auto_now=True,blank=True,null=True)
     time = models.TimeField(auto_now=True,blank=True,null=True)
+    parameter = models.CharField(max_length=300,blank=True,null=True)
+
     
 
 class time_stamp(models.Model):
