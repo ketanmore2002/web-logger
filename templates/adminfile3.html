@@ -640,8 +640,26 @@
       success: function (result) {
         //console.log(result)  
         for (let i = 0; i < result.length; i++) {
-          //console.log(result[i]["fields"]["uuid"]);
           $("#faulty" + result[i]["fields"]["uuid"]).text(result[i]["fields"]["health"])
+
+          if ((result[i]["fields"]["health"]) == "Unhealthy") {
+            $("#faulty" + result[i]["fields"]["uuid"]).removeClass("text-success");
+            $("#faulty" + result[i]["fields"]["uuid"]).addClass("text-danger");
+
+            const str = (result[i]["fields"]["parameter"]).slice(0, -1);
+            const array = str.split(' ');
+            //console.log(array)
+            
+            for (let j = 0; j < array.length; j++) {
+            $("." + array[j] + "-" + result[i]["fields"]["uuid"]).removeClass("text-success");
+            $("." + array[j] + "-" + result[i]["fields"]["uuid"]).addClass("text-danger");
+            }
+            
+          }
+          else{
+            $(".w-25").removeClass("text-danger");
+            $(".w-25").addClass("text-success");
+          };
         };
       }
     });
