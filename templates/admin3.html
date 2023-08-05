@@ -312,7 +312,7 @@
             {% for i in data %}
             <div
             class="position-relative card d-flex flex-column justify-content-between border-0 py-4 backgroundImage overflow-hidden m-1"
-            id="delete_node{{i.id}}" style="width: 380px; border-radius: 20px 20px 20px 20px;">
+            id="delete_node{{i.id}}" style="width: 360px; border-radius: 20px 20px 20px 20px;">
 
               <div class="border-bottom border-secondary d-flex align-items-baseline justify-content-between px-3">
 
@@ -326,7 +326,7 @@
                 <div class="textColor pb-2 d-flex flex-column ">
                   <div class="d-flex align-items-center" style="gap: 8px;">
                     <span class="justify-content-end" style="font-weight: 500; font-size: 25px">
-                      <a class="w-25 text-success" id="faulty{{i.uuid}}"></a>
+                      <a class="fall text-success" id="faulty{{i.uuid}}"></a>
                     </span>
                     <span>
                       <svg width="30px" height="30px" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title>ionicons-v5-d</title><rect x="32" y="144" width="400" height="224" rx="45.7" ry="45.7" style="fill:none;stroke:#ffffff;stroke-linecap:square;stroke-miterlimit:10;stroke-width:32px"></rect><rect x="85.69" y="198.93" width="292.63" height="114.14" rx="4" ry="4" style="stroke:#ffffff;stroke-linecap:square;stroke-miterlimit:10;stroke-width:32px"></rect><line x1="480" y1="218.67" x2="480" y2="293.33" style="fill:none;stroke:#ffffff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px"></line></g></svg>
@@ -345,10 +345,10 @@
                   {% for k in voltage_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white  font-weight-bold roboto" style="font-size: 20px;">Voltage</p>
+                    <p class="text-white font-weight-bold roboto"  style="width:65%; font-size: 20px;">Voltage</p>
                     {% comment %} {% for j in voltage %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid %} {% endcomment %}
-                    <h5 class="w-25 font-weight-bold text-success mb-1 voltage-{{k.uuid}}" > <a id="voltage-{{k.uuid}}" >{{k.voltage}}</a> V</h5>
+                    <h5 style="width:35%" class="font-weight-bold textColor mb-1 text-success voltage-{{k.uuid}} fall" > <a id="voltage-{{k.uuid}}" >{{k.voltage}}</a> V</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -358,10 +358,10 @@
                   {% for k in current_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white  font-weight-bold roboto" style="font-size: 20px;">Current</p>
+                    <p class="text-white font-weight-bold roboto"  style="width:65%; font-size: 20px;">Current</p>
                     {% comment %} {% for j in current %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="w-25 font-weight-bold text-success mb-1 current-{{k.uuid}}"> <a id="current-{{k.uuid}}" >{{k.current}}</a>  A</h5>
+                    <h5 style="width:35%" class="font-weight-bold text-white mb-1 text-success current-{{k.uuid}} fall"> <a id="current-{{k.uuid}}" >{{k.current}}</a>  A</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -372,10 +372,10 @@
                   {% for k in power_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white  font-weight-bold roboto" style="font-size: 20px;">Power</p>
+                    <p class="text-white font-weight-bold roboto"  style="width:65%; font-size: 20px;">Power</p>
                     {% comment %} {% for j in power %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="w-25 font-weight-bold text-success mb-1 power-{{k.uuid}}"> <a id="power-{{k.uuid}}" > {{k.power}} </a>  W</h5>
+                    <h5 style="width:35%" class="font-weight-bold textColor mb-1 text-success power-{{k.uuid}} fall"> <a id="power-{{k.uuid}}" > {{k.power}} </a>  W</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -385,10 +385,10 @@
                   {% for k in generator_speed_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white  font-weight-bold roboto" style="font-size: 20px;">Generator Speed</p>
+                    <p class="text-white font-weight-bold roboto"  style="width:65%; font-size: 20px;">Generator Speed</p>
                     {% comment %} {% for j in generator_speed %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="w-25 font-weight-bold text-success mb-1 generator_speed-{{k.uuid}}" > <a id="generator_speed-{{k.uuid}}" > {{k.generator_speed}} </a>
+                    <h5 style="width:35%" class="font-weight-bold textColor mb-1 text-success generator_speed-{{k.uuid}} fall" > <a id="generator_speed-{{k.uuid}}" > {{k.generator_speed}} </a>
                       RPM</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
@@ -399,10 +399,10 @@
                   {% for k in windspeed_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white font-weight-bold roboto" style="font-size: 20px;">Wind Speed</p>
+                    <p class="text-white font-weight-bold roboto"  style="width:65%; font-size: 20px;">Wind Speed</p>
                     {% comment %} {% for j in windspeed %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="w-25 font-weight-bold text-success mb-1 windspeed-{{k.uuid}}" > <a id="windspeed-{{k.uuid}}" >{{k.windspeed}}</a> KMPH</h5>
+                    <h5 style="width:35%" class="font-weight-bold textColor mb-1 text-success windspeed-{{k.uuid}} fall" > <a id="windspeed-{{k.uuid}}" ></a> KMPH</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -411,8 +411,8 @@
 
 
                   {% comment %} <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="w-75 text-white font-weight-bold roboto" style="font-size: 20px;">Battery</p>
-                    <h5 class="w-25 font-weight-bold text-success mb-1"><a id="battery-{{i.uuid}}">{{i.battery}}</a>
+                    <p class="textColor font-weight-bold roboto"  style="width:65%; font-size: 20px;">Battery</p>
+                    <h5 style="width:35%" class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}}</a>
                       %</h5>
                   </div> {% endcomment %}
               </div>
