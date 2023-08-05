@@ -349,7 +349,7 @@
                     <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Current</p>
                     {% comment %} {% for j in current %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="font-weight-bold textColor mb-1"> <a id="current-{{k.uuid}}" >{{k.current}}</a>  A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    <h5 class="font-weight-bold textColor mb-1"> <a id="current-{{k.uuid}}" >{{k.current}}</a>  A</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -360,10 +360,10 @@
                   {% for k in power_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Power</p>
+                    <p class="w-75 textColor font-weight-bold roboto" style="font-size: 20px;">Power</p>
                     {% comment %} {% for j in power %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="font-weight-bold textColor mb-1"> <a id="power-{{k.uuid}}" > {{k.power}} </a>  W &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    <h5 class="w-25 font-weight-bold textColor mb-1"> <a id="power-{{k.uuid}}" > {{k.power}} </a>  W</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -373,11 +373,11 @@
                   {% for k in generator_speed_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Generator Speed</p>
+                    <p class="w-75 textColor font-weight-bold roboto" style="font-size: 20px;">Generator Speed</p>
                     {% comment %} {% for j in generator_speed %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="generator_speed-{{k.uuid}}" > {{k.generator_speed}} </a>
-                      RPM&nbsp;&nbsp;</h5>
+                    <h5 class="w-25 font-weight-bold textColor mb-1" > <a id="generator_speed-{{k.uuid}}" > {{k.generator_speed}} </a>
+                      RPM</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -387,10 +387,10 @@
                   {% for k in windspeed_para %}
                   {% if i.uuid == k.uuid %}
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">WindSpeed</p>
+                    <p class="w-75 textColor font-weight-bold roboto" style="font-size: 20px;">WindSpeed</p>
                     {% comment %} {% for j in windspeed %} {% endcomment %}
                     {% comment %} {% if i.uuid == j.uuid and i.uuid == k.uuid%} {% endcomment %}
-                    <h5 class="font-weight-bold textColor mb-1" > <a id="windspeed-{{k.uuid}}" > {{k.windspeed}}</a>&nbsp;KMPH</h5>
+                    <h5 class="w-25 font-weight-bold textColor mb-1" > <a id="windspeed-{{k.uuid}}" > {{k.windspeed}}</a>KMPH</h5>
                     {% comment %} {% endif %} {% endcomment %}
                     {% comment %} {% endfor %} {% endcomment %}
                   </div>
@@ -399,37 +399,37 @@
 
 
                   <div class="w-100 d-flex align-items-center justify-content-between ">
-                    <p class="textColor font-weight-bold roboto" style="font-size: 20px;">Battery</p>
-                    <h5 class="font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}}</a>
-                      %&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                    <p class="w-75 textColor font-weight-bold roboto" style="font-size: 20px;">Battery</p>
+                    <h5 class="w-25 font-weight-bold textColor mb-1"><a id="battery-{{i.uuid}}">{{i.battery}}</a>
+                      %</h5>
                   </div>
               </div>
 
-              <div class="flex-grow-0 d-flex flex-column px-4 py-2 mx-4 border border-dark"
+              <div class="flex-grow-0 d-flex flex-column px-3 py-3 mx-3 border border-dark"
                 style="border-radius: 12px;">
 
-                <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold roboto">Username:</span>
-                  <h6 class="font-weight-bold mb-0 text-white">{{i.user_name}}</h6>
+                <div class="w-100 mb-2 d-flex align-items-center justify-content-between">
+                  <span class="w-75 mr-2 text-white font-weight-bold roboto">Username:</span>
+                  <h6 class="w-25 font-weight-bold mb-0 text-white">{{i.user_name}}</h6>
                 </div>
 
-                <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold roboto">Machine :</span>
-                  <h6 class="font-weight-bold mb-0 text-white"><a class="textColor machine{{i.id}}"> {{i.machine}} </a>
+                <div class="w-100 mb-2 d-flex align-items-center justify-content-between">
+                  <span class="w-75 mr-2 text-white font-weight-bold roboto">Machine :</span>
+                  <h6 class="w-25 font-weight-bold mb-0 text-white"><a class="textColor machine{{i.id}}"> {{i.machine}} </a>
                   </h6>
                 </div>
 
-                <div class="mb-2 d-flex align-items-center justify-content-between">
-                  <span class="mr-2 text-white font-weight-bold roboto">Sub Location:</span>
-                  <h6 class="font-weight-bold mb-0 text-white"><a class="textColor sub_location{{i.id}}">
+                <div class="w-100 mb-2 d-flex align-items-center justify-content-between">
+                  <span class="w-75 mr-2 text-white font-weight-bold roboto">Sub Location:</span>
+                  <h6 class="w-25 font-weight-bold mb-0 text-white"><a class="textColor sub_location{{i.id}}">
                       {{i.sub_location}}</a></h6>
                 </div>
 
                 {% for group in user.groups.all %}
                 {% if group.name == 'administrator' or group.name == 'admin' or group.name == 'user'%}
 
-                <div class="row">
-                  <div class="col-6 w-100 d-flex align-items-center justify-content-between mt-2"
+                <div class="d-flex align-items-center justify-content-between" style="gap: 1.5rem;">
+                  <div class="w-100 d-flex align-items-center justify-content-between mt-2"
                     style="border-radius: 8px;">
                     <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold edit"
                       id="{{i.uuid}}" style="border-radius: 8px; background-color: #fc5296;
@@ -438,7 +438,7 @@
                     </button>
                   </div>
 
-                  <div class=" col-6 w-100 d-flex align-items-center justify-content-between mt-2"
+                  <div class="w-100 d-flex align-items-center justify-content-between mt-2"
                     style="border-radius: 8px;">
                     <button class="w-100 text-center px-4 py-2 text-white border-0 bg-primary font-weight-bold lala"
                       id="{{i.id}}" style="border-radius: 8px; background-color: #fc5296;
