@@ -46,6 +46,8 @@ urlpatterns = [
 
     path("server/",views.server,name='serever'),
 
+    path("get_set_points_data/<str:uuid>",views.get_set_points_data,name='get_single_node'),
+
 ]
 
 

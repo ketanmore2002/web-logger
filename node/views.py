@@ -689,8 +689,8 @@ class GenerateInvoice(GroupRequiredMixin, APIView):
         generator_speed_data = generator_speed_model.objects.filter(uuid = uuid ,date__range=(start_date, end_date),time__range=(start_time,end_time)).values('generator_speed')
         power_data = power_model.objects.filter(uuid = uuid ,date__range=(start_date, end_date),time__range=(start_time,end_time)).values('power')
         windspeed_data = windspeed_model.objects.filter(uuid = uuid ,date__range=(start_date, end_date),time__range=(start_time,end_time)).values('windspeed')
-        time_data = time_stamp.objects.filter(date__range=(start_date, end_date),time__range=(start_time,end_time)).values('time')
-        date_data = time_stamp.objects.filter(date__range=(start_date, end_date),time__range=(start_time,end_time)).values('date')
+        time_data = time_stamp.objects.filter(date__range=(start_date, end_date),time__range=(start_time,end_time)).values('time_rig')
+        date_data = time_stamp.objects.filter(date__range=(start_date, end_date),time__range=(start_time,end_time)).values('date_rig')
 
         combined_data = []
 
@@ -923,6 +923,35 @@ def version(request) :
 @csrf_exempt
 def server(request) :
     return HttpResponse("server is running")
+
+
+
+def get_set_points_data (request,uuid):
+    result = {}
+    if request.method == 'GET' :
+
+        voltage_low = voltage_parameters.objects.filter(uuid = uuid).values_list("voltage_low",flat = True)[0]
+        result.update({"voltage_low" : voltage_low})
+
+        voltage_high = voltage_parameters.objects.filter(uuid = uuid).values_list("voltage_high",flat = True)[0]
+        result.update({"voltage_high" : voltage_high})
+
+        current_low = current_parameters.objects.filter(uuid = uuid).values_list("current_low",flat = True)[0]
+        result.update({"current_low" : current_low})
+
+        current_high = current_parameters.objects.filter(uuid = uuid).values_list("current_high",flat = True)[0]
+        result.update({"current_high" : current_high})
+
+        json_data = json.dumps(result)
+        
+        return JsonResponse(json_data, safe=False)
+
+
+
+
+
+
+
 
 
 
