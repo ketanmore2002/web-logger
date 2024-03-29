@@ -730,6 +730,7 @@ class GenerateInvoice(GroupRequiredMixin, APIView):
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as mqtt_publish
 
+
 def on_connect(mqtt_client, userdata, flags, rc):
    if rc == 0:
        print('Connected successfully')
